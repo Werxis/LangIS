@@ -1,13 +1,6 @@
-//import { useTranslation } from './recoil/atoms';
-// import LanguageSelect from './components/LanguageSelect';
-
 import useElementSize from './hooks/useElementSize';
 
 function App() {
-  // const t = useTranslation();
-  // const text = t('home');
-  // console.log('text: ', text);
-
   const [ref, size] = useElementSize();
   console.log('size: ', size);
 

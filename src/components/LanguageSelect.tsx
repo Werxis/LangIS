@@ -7,10 +7,9 @@ import {
 } from '@mui/material';
 
 import Flag from 'react-flagkit';
-
-import { useLanguage } from '../recoil/atoms';
 import { LanguageKeys, languageKeys } from '../localization';
 
+import useLanguage from '../hooks/useLanguage';
 import useLocalStorage from '../hooks/useLocalStorage';
 
 // https://github.com/madebybowtie/FlagKit/blob/master/Assets/Flags.md
