@@ -11,6 +11,8 @@ import Flag from 'react-flagkit';
 import { useLanguage } from '../recoil/atoms';
 import { LanguageKeys, languageKeys } from '../localization';
 
+import useLocalStorage from '../hooks/useLocalStorage';
+
 // https://github.com/madebybowtie/FlagKit/blob/master/Assets/Flags.md
 const resolveLanguageKeyToFlagKey = (languageKey: LanguageKeys) => {
   switch (languageKey) {
@@ -26,10 +28,15 @@ const resolveLanguageKeyToFlagKey = (languageKey: LanguageKeys) => {
 };
 
 const LanguageSelect = () => {
-  const [language, setLanguage] = useLanguage();
+  const [language] = useLanguage();
+  const [storedLanguage, setStoredLanguage] = useLocalStorage(
+    'language',
+    language
+  );
 
   const onLanguageChange = (event: SelectChangeEvent) => {
-    setLanguage(event.target.value as LanguageKeys);
+    const newLanguageValue = event.target.value as LanguageKeys;
+    setStoredLanguage(newLanguageValue);
   };
 
   return (
@@ -37,7 +44,7 @@ const LanguageSelect = () => {
       <Select
         variant="outlined"
         id="select-language"
-        value={language}
+        value={storedLanguage}
         onChange={onLanguageChange}
         autoWidth
       >
