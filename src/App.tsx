@@ -2,12 +2,20 @@ import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
+import { useTranslation } from './recoil/atoms';
+import LanguageSelect from './components/LanguageSelect';
 
 function App() {
   const [count, setCount] = useState(0);
+  const t = useTranslation();
+  const text = t('home');
+  console.log('text: ', text);
 
   return (
     <div className="App">
+      <div>
+        <LanguageSelect />
+      </div>
       <div>
         <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
           <img src={viteLogo} className="logo" alt="Vite logo" />
