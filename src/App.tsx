@@ -6,6 +6,7 @@ import LanguageSelect from './components/LanguageSelect';
 import TextInput from './components/forms/TextInput';
 import { AccountCircle } from '@mui/icons-material';
 import TextArea from './components/forms/TextArea';
+import SingleSelect from './components/forms/SingleSelect';
 
 function App() {
   const { setDialog } = useDialog();
@@ -52,6 +53,7 @@ function App() {
           initialValues={{
             firstName: '',
             description: '',
+            fruits: '',
           }}
           onSubmit={(values) => console.log('values: ', values)}
           validationSchema={Yup.object({
@@ -59,6 +61,7 @@ function App() {
               .max(10, 'Max 10 chars')
               .required('Required'),
             description: Yup.string().required(),
+            fruits: Yup.string().required(),
           })}
         >
           <Form>
@@ -76,6 +79,31 @@ function App() {
               rows={5}
               placeholder="Enter something"
             />
+            <SingleSelect
+              name="fruits"
+              id="fruits"
+              options={[
+                {
+                  label: 'Empty',
+                  value: '',
+                  decoration: 'italic',
+                },
+                {
+                  label: 'Apple',
+                  value: 'apple',
+                },
+                {
+                  label: 'Banana',
+                  value: 'banana',
+                },
+              ]}
+              label="Fruits"
+              helperText="Select some fruit!!!!!!!"
+              fullWidth
+            />
+            <Button variant="outlined" type="submit">
+              Submit
+            </Button>
           </Form>
         </Formik>
       </Box>
