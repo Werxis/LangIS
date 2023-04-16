@@ -1,6 +1,6 @@
-import LanguageSelect from './components/LanguageSelect';
-import useDialog from './hooks/useDialog';
 import { Button } from '@mui/material';
+import useDialog from './hooks/useDialog';
+import LanguageSelect from './components/LanguageSelect';
 
 function App() {
   const { setDialog } = useDialog();

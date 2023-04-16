@@ -17,6 +17,7 @@
     "react-dom": "^18.2.0",
     "react-flagkit": "^2.0.4",
     "recoil": "^0.7.7",
+    "recoil-persist": "^4.2.0",
     "sanitize.css": "^13.0.0"
   },
   "devDependencies": {

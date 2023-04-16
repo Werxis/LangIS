@@ -6,11 +6,10 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 
+import useLanguage from '../hooks/useLanguage';
+
 import Flag from 'react-flagkit';
 import { LanguageKeys, languageKeys } from '../localization';
-
-import useLanguage from '../hooks/useLanguage';
-import useLocalStorage from '../hooks/useLocalStorage';
 
 // https://github.com/madebybowtie/FlagKit/blob/master/Assets/Flags.md
 const resolveLanguageKeyToFlagKey = (languageKey: LanguageKeys) => {
@@ -27,15 +26,11 @@ const resolveLanguageKeyToFlagKey = (languageKey: LanguageKeys) => {
 };
 
 const LanguageSelect = () => {
-  const [language] = useLanguage();
-  const [storedLanguage, setStoredLanguage] = useLocalStorage(
-    'language',
-    language
-  );
+  const [language, setLanguage] = useLanguage();
 
   const onLanguageChange = (event: SelectChangeEvent) => {
     const newLanguageValue = event.target.value as LanguageKeys;
-    setStoredLanguage(newLanguageValue);
+    setLanguage(newLanguageValue);
   };
 
   return (
@@ -43,7 +38,7 @@ const LanguageSelect = () => {
       <Select
         variant="outlined"
         id="select-language"
-        value={storedLanguage}
+        value={language}
         onChange={onLanguageChange}
         autoWidth
       >

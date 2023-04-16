@@ -1,12 +1,19 @@
 import { ReactNode } from 'react';
 import { atom } from 'recoil';
 import { LanguageKeys } from '../localization';
+import { recoilPersist } from 'recoil-persist';
 
 // - - -
+
+const { persistAtom: persistLanguageAtom } = recoilPersist({
+  key: 'language',
+  storage: localStorage,
+});
 
 export const languageAtom = atom<LanguageKeys>({
   key: 'languageAtom',
   default: 'cs',
+  effects_UNSTABLE: [persistLanguageAtom],
 });
 
 // - - -
