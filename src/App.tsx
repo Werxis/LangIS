@@ -1,6 +1,11 @@
-import { Button } from '@mui/material';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import { Box, Button } from '@mui/material';
 import useDialog from './hooks/useDialog';
 import LanguageSelect from './components/LanguageSelect';
+import TextInput from './components/forms/TextInput';
+import { AccountCircle } from '@mui/icons-material';
+import TextArea from './components/forms/TextArea';
 
 function App() {
   const { setDialog } = useDialog();
@@ -41,6 +46,39 @@ function App() {
           Open Dialog
         </Button>
       </div>
+
+      <Box sx={{ mx: 'auto', width: 800, my: 3 }}>
+        <Formik
+          initialValues={{
+            firstName: '',
+            description: '',
+          }}
+          onSubmit={(values) => console.log('values: ', values)}
+          validationSchema={Yup.object({
+            firstName: Yup.string()
+              .max(10, 'Max 10 chars')
+              .required('Required'),
+            description: Yup.string().required(),
+          })}
+        >
+          <Form>
+            <TextInput
+              name="firstName"
+              type="text"
+              label="First Name"
+              placeholder="Jane"
+              helperText="Enter your name"
+              icon={<AccountCircle />}
+            />
+            <TextArea
+              name="description"
+              fullWidth
+              rows={5}
+              placeholder="Enter something"
+            />
+          </Form>
+        </Formik>
+      </Box>
     </div>
   );
 }
