@@ -12,6 +12,7 @@ import Checkbox from './components/forms/Checkbox';
 import RadioGroup from './components/forms/RadioGroup';
 
 type Fruits = 'apple' | 'banana' | '';
+type Grades = 'A' | 'B' | 'C' | 'D' | 'E' | '';
 
 function App() {
   const { setDialog } = useDialog();
@@ -75,7 +76,7 @@ function App() {
             description: '',
             fruits: '' as Fruits,
             license: false,
-            grade: 'C',
+            grade: 'C' as Grades,
           }}
           onSubmit={(values) => console.log('values: ', values)}
           validationSchema={Yup.object({

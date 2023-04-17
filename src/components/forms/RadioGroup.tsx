@@ -16,6 +16,8 @@ export type RadioOption<T> = {
   value: T;
 };
 
+export type RadioOptions<T> = RadioOption<T>[];
+
 type RadioGroupProps<T> = {
   name: string;
   options: RadioOption<T>[];
