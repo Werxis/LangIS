@@ -3,21 +3,25 @@ import useMediaDevice from '../../hooks/useMediaDevice';
 
 import { TextField, MenuItem } from '@mui/material';
 
-type Option<T> = {
+export type SelectOption<T> = {
   label: string;
   value: T;
   decoration?: 'italic' | 'bold';
 };
 
+export type SelectOptions<T> = SelectOption<T>[];
+
 type SelectInputProps<T> = {
   name: string;
-  options: Option<T>[];
+  options: SelectOption<T>[];
   id: string;
   label?: string;
   required?: boolean;
   disabled?: boolean;
   helperText?: string;
   fullWidth?: boolean;
+  size?: 'small' | 'medium';
+  color?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
 };
 
 const SingleSelect = <T extends string>(props: SelectInputProps<T>) => {
@@ -37,9 +41,9 @@ const SingleSelect = <T extends string>(props: SelectInputProps<T>) => {
       select
       error={isError}
       helperText={isError ? meta.error : props.helperText}
-      size={isMobile ? 'small' : 'medium'}
+      size={isMobile ? 'small' : props.size ?? 'medium'}
     >
-      {props.options.map((option: Option<T>) => (
+      {props.options.map((option: SelectOption<T>) => (
         <MenuItem key={option.value} value={option.value}>
           {option.decoration === 'italic' ? (
             <em>{option.label}</em>
@@ -48,7 +52,6 @@ const SingleSelect = <T extends string>(props: SelectInputProps<T>) => {
           ) : (
             <>{option.label}</>
           )}
-          {option.label}
         </MenuItem>
       ))}
     </TextField>

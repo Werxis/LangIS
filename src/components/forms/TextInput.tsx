@@ -15,6 +15,7 @@ interface TextInputProps {
   disabled?: boolean;
   helperText?: string;
   fullWidth?: boolean;
+  color?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
   icon?: string | ReactNode;
 }
 

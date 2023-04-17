@@ -12,6 +12,7 @@ interface TextAreaProps {
   disabled?: boolean;
   helperText?: string;
   fullWidth?: boolean;
+  color?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
   rows?: number; // initial rows height, after filling the rows with content.. automatically scrollbar
   minRows?: number; // even when empty, min height in rows, without maxRows.. will expand without scrollbar
   maxRows?: number; // max possible height to which can expand, then scrollbar

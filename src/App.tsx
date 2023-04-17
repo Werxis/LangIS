@@ -7,6 +7,11 @@ import TextInput from './components/forms/TextInput';
 import { AccountCircle } from '@mui/icons-material';
 import TextArea from './components/forms/TextArea';
 import SingleSelect from './components/forms/SingleSelect';
+import { SelectOptions } from './components/forms/SingleSelect';
+import Checkbox from './components/forms/Checkbox';
+import RadioGroup from './components/forms/RadioGroup';
+
+type Fruits = 'apple' | 'banana' | '';
 
 function App() {
   const { setDialog } = useDialog();
@@ -21,6 +26,21 @@ function App() {
   const onClose = () => {
     console.log('CLOSED!');
   };
+
+  const fruitOptions: SelectOptions<Fruits> = [
+    {
+      value: '',
+      label: 'Empty',
+    },
+    {
+      value: 'apple',
+      label: 'Apple',
+    },
+    {
+      value: 'banana',
+      label: 'Banana',
+    },
+  ];
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
@@ -53,7 +73,9 @@ function App() {
           initialValues={{
             firstName: '',
             description: '',
-            fruits: '',
+            fruits: '' as Fruits,
+            license: false,
+            grade: 'C',
           }}
           onSubmit={(values) => console.log('values: ', values)}
           validationSchema={Yup.object({
@@ -61,7 +83,8 @@ function App() {
               .max(10, 'Max 10 chars')
               .required('Required'),
             description: Yup.string().required(),
-            fruits: Yup.string().required(),
+            fruits: Yup.mixed<Fruits>().required('Required select field'),
+            grade: Yup.string().required().oneOf(['A', 'B', 'C']),
           })}
         >
           <Form>
@@ -82,24 +105,49 @@ function App() {
             <SingleSelect
               name="fruits"
               id="fruits"
-              options={[
-                {
-                  label: 'Empty',
-                  value: '',
-                  decoration: 'italic',
-                },
-                {
-                  label: 'Apple',
-                  value: 'apple',
-                },
-                {
-                  label: 'Banana',
-                  value: 'banana',
-                },
-              ]}
+              options={fruitOptions}
+              color="secondary"
               label="Fruits"
               helperText="Select some fruit!!!!!!!"
               fullWidth
+            />
+            <Checkbox
+              name="license"
+              label="Súhlasíte s vyššie uvedenými podmienkami ?"
+              size="medium"
+              color="secondary"
+              //icon="apple"
+              //checkedIcon="javascript"
+            />
+            <RadioGroup
+              name="grade"
+              id="grade"
+              direction="row"
+              label="Grades: "
+              color="secondary"
+              helperText="Choose your preferred grade"
+              options={[
+                {
+                  label: 'A',
+                  value: 'A',
+                },
+                {
+                  label: 'B',
+                  value: 'B',
+                },
+                {
+                  label: 'C',
+                  value: 'C',
+                },
+                {
+                  label: 'D',
+                  value: 'D',
+                },
+                {
+                  label: 'E',
+                  value: 'E',
+                },
+              ]}
             />
             <Button variant="outlined" type="submit">
               Submit
