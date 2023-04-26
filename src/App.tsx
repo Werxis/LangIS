@@ -18,7 +18,6 @@ function App() {
   /* Undefined -> not loaded yet, Null -> logged out, User -> logged in */
   const { user } = useAuthUser();
   const [isLoaderWholePage] = useLoader();
-  const isAuthenticated = user !== null && user !== undefined;
   console.log('user: ', user);
 
   return (
@@ -36,7 +35,7 @@ function App() {
             <Route
               path="/secret"
               element={
-                <AuthWrapper isAuthenticated={isAuthenticated}>
+                <AuthWrapper user={user}>
                   <Secret />
                 </AuthWrapper>
               }
@@ -44,8 +43,8 @@ function App() {
             <Route
               path="/profile"
               element={
-                <AuthWrapper isAuthenticated={isAuthenticated}>
-                  <Profile />
+                <AuthWrapper user={user}>
+                  {(user) => <Profile user={user} />}
                 </AuthWrapper>
               }
             />
