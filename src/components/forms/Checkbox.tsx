@@ -1,7 +1,7 @@
 import { Checkbox as MuiCheckbox, FormControlLabel, Icon } from '@mui/material';
 import { useField } from 'formik';
 import { FC, ReactNode } from 'react';
-import useMediaDevice from '../../hooks/useMediaDevice';
+import { useMediaDevice } from '../../hooks';
 
 interface CheckboxProps {
   name: string;

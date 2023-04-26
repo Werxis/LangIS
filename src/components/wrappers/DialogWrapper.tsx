@@ -9,8 +9,8 @@ import {
   DialogActions,
 } from '@mui/material';
 
-import useDialog from '../hooks/useDialog';
-import { DialogOptions } from '../recoil/atoms';
+import { useDialog } from '../../hooks';
+import { DialogOptions } from '../../recoil/atoms';
 
 const resolveDialogSize = (dialogSize: DialogOptions['size']) => {
   if (!dialogSize || dialogSize === 'tiny') {
@@ -69,17 +69,19 @@ const DialogWrapper = () => {
         <Button onClick={onCloseHandler} sx={{ minWidth: 100 }}>
           Cancel
         </Button>
-        <Button
-          onClick={onSubmitHandler}
-          variant={isSubmitting ? 'text' : 'contained'}
-          sx={{ minWidth: 100 }}
-        >
-          {isSubmitting ? (
-            <CircularProgress size={25} />
-          ) : (
-            dialog.submitLabel ?? 'Submit'
-          )}
-        </Button>
+        {dialog.onSubmit && (
+          <Button
+            onClick={onSubmitHandler}
+            variant={isSubmitting ? 'text' : 'contained'}
+            sx={{ minWidth: 100 }}
+          >
+            {isSubmitting ? (
+              <CircularProgress size={25} />
+            ) : (
+              dialog.submitLabel ?? 'Submit'
+            )}
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

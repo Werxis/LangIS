@@ -1,5 +1,5 @@
 import localization, { LocalizationKeys } from '../localization';
-import useLanguage from './useLanguage';
+import { useLanguage } from '../hooks';
 
 const useTranslation = () => {
   const [language] = useLanguage();

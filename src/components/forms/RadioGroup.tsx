@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 
 import { useField } from 'formik';
-import useMediaDevice from '../../hooks/useMediaDevice';
+import { useMediaDevice } from '../../hooks';
 
 export type RadioOption<T> = {
   label: string;

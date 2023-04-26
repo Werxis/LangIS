@@ -1,25 +1,27 @@
 import { useRecoilState } from 'recoil';
 import { DialogData, DialogOptions, dialogAtom } from '../recoil/atoms';
 
+interface SetDialogArgs {
+  dialogTitle: string;
+  dialogData: DialogData;
+  submitLabel?: string;
+  onSubmit?: () => Promise<void>;
+  onClose?: () => void;
+  dialogOptions?: DialogOptions;
+}
+
 const useDialog = () => {
   const [dialog, setDialogAtom] = useRecoilState(dialogAtom);
 
-  const setDialog = (
-    dialogTitle: string,
-    dialogData: DialogData,
-    submitLabel?: string,
-    onSubmit?: () => Promise<void>,
-    onClose?: () => void,
-    dialogOptions?: DialogOptions
-  ) => {
+  const setDialog = (args: SetDialogArgs) => {
     setDialogAtom({
       isDialogOpen: true,
-      dialogTitle: dialogTitle,
-      dialogData: dialogData,
-      submitLabel: submitLabel,
-      onSubmit: onSubmit,
-      onClose: onClose,
-      dialogOptions: dialogOptions,
+      dialogTitle: args.dialogTitle,
+      dialogData: args.dialogData,
+      submitLabel: args.submitLabel,
+      onSubmit: args.onSubmit,
+      onClose: args.onClose,
+      dialogOptions: args.dialogOptions,
     });
   };
 

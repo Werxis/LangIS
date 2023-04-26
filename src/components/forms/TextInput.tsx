@@ -1,6 +1,6 @@
 import { useState, ReactNode, FC } from 'react';
 import { useField } from 'formik';
-import useMediaDevice from '../../hooks/useMediaDevice';
+import { useMediaDevice } from '../../hooks';
 
 import { TextField, Icon, IconButton } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -17,6 +17,7 @@ interface TextInputProps {
   fullWidth?: boolean;
   color?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
   icon?: string | ReactNode;
+  size?: 'small' | 'medium';
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,7 +44,7 @@ const TextInput: FC<TextInputAllProps> = (props) => {
       type={fieldType}
       error={isError}
       helperText={isError ? meta.error : props.helperText}
-      size={isMobile ? 'small' : 'medium'}
+      size={isMobile ? 'small' : props.size ?? 'medium'}
       InputProps={{
         startAdornment:
           icon === undefined ? undefined : typeof icon === 'string' ? (

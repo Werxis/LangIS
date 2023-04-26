@@ -6,7 +6,7 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 
-import useLanguage from '../hooks/useLanguage';
+import { useLanguage } from '../hooks';
 
 import Flag from 'react-flagkit';
 import { LanguageKeys, languageKeys } from '../localization';
@@ -41,6 +41,17 @@ const LanguageSelect = () => {
         value={language}
         onChange={onLanguageChange}
         autoWidth
+        sx={{
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'white',
+          },
+          '& .MuiSelect-select': {
+            py: 0.8,
+          },
+          '& .MuiSelect-iconOutlined': {
+            color: 'white',
+          },
+        }}
       >
         {languageKeys.map((languageKey: LanguageKeys) => (
           <MenuItem key={languageKey} value={languageKey}>

@@ -1,5 +1,5 @@
 import { useField } from 'formik';
-import useMediaDevice from '../../hooks/useMediaDevice';
+import { useMediaDevice } from '../../hooks';
 
 import { TextField, MenuItem } from '@mui/material';
 
