@@ -177,31 +177,31 @@ const LoginForm = () => {
               <Box
                 sx={{
                   display: 'flex',
-                  flexDirection: isMobile ? 'column-reverse' : 'row',
-                  justifyContent: 'space-between',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
                   alignItems: 'center',
                   gap: '15px',
                   width: '100%',
                 }}
               >
-                <Box sx={{ width: '60%' }}>
+                <Button type="submit" sx={{ width: isMobile ? '50%' : '40%' }}>
+                  Prihlásenie
+                </Button>
+
+                <Box>
                   {submissionErrorMessage !== null && (
                     <Typography color={'error'}>
                       {submissionErrorMessage}
                     </Typography>
                   )}
                 </Box>
-
-                <Button type="submit" sx={{ width: '40%' }}>
-                  Prihlásenie
-                </Button>
               </Box>
             </Box>
           </Form>
         </Formik>
 
         {/* Providers Login */}
-        <Box sx={{ marginTop: 4 }}>
+        <Box sx={{ marginTop: 3 }}>
           <Box
             sx={{
               display: 'flex',
