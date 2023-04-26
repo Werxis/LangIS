@@ -1,19 +1,10 @@
-import { useState, MouseEvent, FC } from 'react';
-import {
-  Box,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  CircularProgress,
-} from '@mui/material';
-import { blue } from '@mui/material/colors';
+import { useState, FC } from 'react';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import {
   AccountCircleOutlined,
   MailLockOutlined,
   PasswordOutlined,
 } from '@mui/icons-material';
-import MenuIcon from '@mui/icons-material/Menu';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 
@@ -32,25 +23,21 @@ import bgImage from '../../assets/langis_home_background.jpg';
 import googleIcon from '../../assets/icons/icon_google.svg';
 import githubIcon from '../../assets/icons/icon_github.png';
 
-import LanguageSelect from '../../components/LanguageSelect';
 import TextInput from '../../components/forms/TextInput';
 import Button from '../../components/Button';
 
 // Hooks
 import { useMediaDevice, useDialog } from '../../hooks';
+import { useIsLoginFormActive } from '../../recoil/atoms';
 
 const HomeSignedOut = () => {
-  const [isLoginFormActive, setIsLoginFormActive] = useState<boolean>(true);
+  const [isLoginFormActive] = useIsLoginFormActive();
 
   const { deviceType, isMobile } = useMediaDevice();
 
   return (
     <Box>
-      {/* Navbar */}
-      <NavBarSignOut
-        isLoginFormActive={isLoginFormActive}
-        setIsLoginFormActive={setIsLoginFormActive}
-      />
+      {/* Navbar with height: '8vh' is also included, do not forget! */}
 
       {/* Background image + Login */}
       <Box
@@ -114,116 +101,6 @@ const HomeSignedOut = () => {
 };
 
 export default HomeSignedOut;
-
-// - - -
-
-interface NavBarSignOutProps {
-  isLoginFormActive: boolean;
-  setIsLoginFormActive: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const NavBarSignOut: FC<NavBarSignOutProps> = ({
-  isLoginFormActive,
-  setIsLoginFormActive,
-}) => {
-  const [anchorElNav, setAnchorElNav] = useState<HTMLElement | null>(null);
-  const { isMobile } = useMediaDevice();
-
-  const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  return (
-    <Box
-      component="nav"
-      sx={{
-        height: '8vh', // HERE
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: blue[900],
-      }}
-    >
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
-        <Typography
-          variant={isMobile ? 'h4' : 'h3'}
-          component="h1"
-          sx={{ color: 'white', marginLeft: 2.5, cursor: 'pointer' }}
-        >
-          LangIS
-        </Typography>
-
-        {!isMobile && <Button>O aplikaci</Button>}
-      </Box>
-
-      {!isMobile && (
-        <Box
-          sx={{
-            marginRight: 3.5,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '25px',
-          }}
-        >
-          <Button onClick={() => setIsLoginFormActive(!isLoginFormActive)}>
-            {isLoginFormActive ? 'Registrácia' : 'Prihlásenie'}
-          </Button>
-
-          <LanguageSelect />
-        </Box>
-      )}
-
-      {isMobile && (
-        <Box
-          sx={{
-            marginRight: 1.5,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '15px',
-          }}
-        >
-          <LanguageSelect />
-          <Box>
-            <IconButton
-              size="large"
-              sx={{ color: 'white' }}
-              onClick={handleOpenNavMenu}
-            >
-              <MenuIcon />
-            </IconButton>
-
-            <Menu
-              anchorEl={anchorElNav}
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-              keepMounted
-              transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-              open={!!anchorElNav}
-              onClose={handleCloseNavMenu}
-            >
-              <MenuItem
-                onClick={() => {
-                  setIsLoginFormActive(!isLoginFormActive);
-                  handleCloseNavMenu();
-                }}
-              >
-                <Typography>
-                  {isLoginFormActive ? 'Registrácia' : 'Prihlásenie'}
-                </Typography>
-              </MenuItem>
-              <MenuItem onClick={handleCloseNavMenu}>
-                <Typography>O aplikaci</Typography>
-              </MenuItem>
-            </Menu>
-          </Box>
-        </Box>
-      )}
-    </Box>
-  );
-};
 
 // - - -
 
@@ -365,49 +242,80 @@ const LoginForm = () => {
               gap: '15px',
             }}
           >
-            <Button
-              sx={{
-                borderColor: 'black',
-                color: 'black',
-                width: isMobile ? '85%' : '60%',
-                display: 'flex',
-                justifyContent: 'start',
-              }}
-              onClick={loginGoogle}
-            >
-              <Box sx={{ width: '15%' }}>
-                <img src={googleIcon} style={{ width: '26px' }} />
-              </Box>
-              <Box sx={{ width: '85%' }}>
-                <Typography variant="button" sx={{ opacity: '55%' }}>
-                  Sign in with Google
-                </Typography>
-              </Box>
-            </Button>
+            <SignInProvidersButton
+              loginHandler={loginGoogle}
+              providerIconSrc={googleIcon}
+              providerName="Google"
+              setSubmissionErrorMessage={setSubmissionErrorMessage}
+            />
 
-            <Button
-              sx={{
-                borderColor: 'black',
-                color: 'black',
-                width: isMobile ? '85%' : '60%',
-                display: 'flex',
-                justifyContent: 'start',
-              }}
-              onClick={loginGithub}
-            >
-              <Box sx={{ width: '15%' }}>
-                <img src={githubIcon} style={{ width: '26px' }} />
-              </Box>
-              <Box sx={{ width: '85%' }}>
-                <Typography variant="button" sx={{ opacity: '55%' }}>
-                  Sign in with GitHub
-                </Typography>
-              </Box>
-            </Button>
+            <SignInProvidersButton
+              loginHandler={loginGithub}
+              providerIconSrc={githubIcon}
+              providerName="Github"
+              setSubmissionErrorMessage={setSubmissionErrorMessage}
+            />
           </Box>
         </Box>
       </Box>
     </>
+  );
+};
+
+// - - -
+
+interface SignInProvidersButtonProps {
+  providerIconSrc: string;
+  providerName: string;
+  loginHandler: () => Promise<UserCredential>;
+  setSubmissionErrorMessage: React.Dispatch<
+    React.SetStateAction<string | null>
+  >;
+}
+
+const SignInProvidersButton: FC<SignInProvidersButtonProps> = ({
+  providerIconSrc,
+  providerName,
+  loginHandler,
+  setSubmissionErrorMessage,
+}) => {
+  const { isMobile } = useMediaDevice();
+
+  const handleLogin = async () => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const userCredential: UserCredential = await loginHandler();
+      //const user: User = userCredential.user;
+    } catch (error) {
+      console.error(error);
+      if (error instanceof FirebaseError) {
+        setSubmissionErrorMessage(error.message);
+      } else {
+        setSubmissionErrorMessage('Login has failed!');
+      }
+    }
+  };
+
+  return (
+    <Button
+      sx={{
+        borderColor: 'black',
+        color: 'black',
+        width: isMobile ? '85%' : '60%',
+        display: 'flex',
+        justifyContent: 'start',
+      }}
+      onClick={handleLogin}
+    >
+      <Box sx={{ width: '15%' }}>
+        <img src={providerIconSrc} style={{ width: '26px' }} />
+      </Box>
+      <Box sx={{ width: '85%' }}>
+        <Typography variant="button" sx={{ opacity: '55%' }}>
+          Sign in with {providerName}
+        </Typography>
+      </Box>
+    </Button>
   );
 };
 

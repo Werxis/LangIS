@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { atom } from 'recoil';
+import { atom, useRecoilState } from 'recoil';
 import { LanguageKeys } from '../localization';
 import { recoilPersist } from 'recoil-persist';
 
@@ -38,3 +38,15 @@ export const dialogAtom = atom<Dialog>({
     isDialogOpen: false,
   },
 });
+
+// - - -
+
+const loginFormActiveAtom = atom<boolean>({
+  key: 'loginFormActiveAtom',
+  default: true,
+});
+
+export const useIsLoginFormActive = () => {
+  // [boolean, SetterOrUpdater<boolean>]
+  return useRecoilState(loginFormActiveAtom);
+};

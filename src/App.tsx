@@ -8,12 +8,14 @@ import DialogWrapper from './components/wrappers/DialogWrapper';
 import 'sanitize.css';
 import theme from './theme';
 
-import Home from './pages/Home';
+import Home from './pages/Home/Home';
 import Test from './pages/Test';
 import NotFound from './pages/NotFound';
+import Profile from './pages/Profile';
 import Secret from './pages/Secret';
 
 import LoaderWholePage from './components/LoaderWholePage';
+import NavBar from './components/NavBar';
 
 import { useAuthUser } from './hooks';
 
@@ -32,20 +34,31 @@ function App() {
           {user === undefined ? (
             <LoaderWholePage />
           ) : (
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/test" element={<Test />} />
-              <Route path="*" element={<NotFound />} />
-              {/* Authenticated routes */}
-              <Route
-                path="/secret"
-                element={
-                  <AuthWrapper isAuthenticated={isAuthenticated}>
-                    <Secret />
-                  </AuthWrapper>
-                }
-              />
-            </Routes>
+            <>
+              <NavBar user={user} />
+              <Routes>
+                <Route path="/" element={<Home user={user} />} />
+                <Route path="/test" element={<Test />} />
+                <Route path="*" element={<NotFound />} />
+                {/* Authenticated routes */}
+                <Route
+                  path="/secret"
+                  element={
+                    <AuthWrapper isAuthenticated={isAuthenticated}>
+                      <Secret />
+                    </AuthWrapper>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <AuthWrapper isAuthenticated={isAuthenticated}>
+                      <Profile />
+                    </AuthWrapper>
+                  }
+                />
+              </Routes>
+            </>
           )}
         </BrowserRouter>
       </ThemeProvider>
