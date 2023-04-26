@@ -5,6 +5,7 @@ import useDocumentTitle from './useDocumentTitle';
 import useElementSize from './useElementSize';
 import useFirestoreOnSnapshot from './useFirestoreOnSnapshot';
 import useLanguage from './useLanguage';
+import useLoader from './useLoader';
 import useLocalStorage from './useLocalStorage';
 import useMediaDevice from './useMediaDevice';
 import useTranslation from './useTranslation';
@@ -17,6 +18,7 @@ export {
   useElementSize,
   useFirestoreOnSnapshot,
   useLanguage,
+  useLoader,
   useLocalStorage,
   useMediaDevice,
   useTranslation,

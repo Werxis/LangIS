@@ -50,3 +50,10 @@ export const useIsLoginFormActive = () => {
   // [boolean, SetterOrUpdater<boolean>]
   return useRecoilState(loginFormActiveAtom);
 };
+
+// - - -
+
+export const isLoaderOfWholePageOnAtom = atom<boolean>({
+  key: 'isLoaderOfWholePageOnAtom',
+  default: false,
+});
