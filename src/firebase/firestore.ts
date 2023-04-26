@@ -18,11 +18,18 @@ const db = getFirestore(app);
 
 // - - - -
 
+type UserRole = 'admin' | 'teacher' | 'student';
+
 // User Collection
 export type LangISUser = {
   firstName: string;
   lastName: string;
   email: string;
+  role: UserRole;
+  photoUrl: string | null;
+  age: number | null;
+  location: string | null;
+  description: string | null;
 };
 
 export type LangIsUserWithId = LangISUser & { uid: string };

@@ -10,14 +10,14 @@ import * as Yup from 'yup';
 
 // Firebase
 import { FirebaseError } from 'firebase/app';
-import { UserCredential } from 'firebase/auth';
+import { User, UserCredential } from 'firebase/auth';
 import {
   registerEmailPassword,
   loginEmailPassword,
   loginGoogle,
   loginGithub,
 } from '../../firebase/auth';
-import { setUserById } from '../../firebase/firestore';
+import { getUser, setUserById } from '../../firebase/firestore';
 
 import bgImage from '../../assets/langis_home_background.jpg';
 import googleIcon from '../../assets/icons/icon_google.svg';
@@ -283,9 +283,26 @@ const SignInProvidersButton: FC<SignInProvidersButtonProps> = ({
 
   const handleLogin = async () => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const userCredential: UserCredential = await loginHandler();
-      //const user: User = userCredential.user;
+      const user: User = userCredential.user;
+      const names = user.displayName?.split(' ');
+
+      const fetchedUser = await getUser(user.uid);
+      if (fetchedUser !== undefined) {
+        // User already exists, was logged with provider and thus created before!
+        return;
+      }
+
+      await setUserById(user.uid, {
+        firstName: (names && names[0]) ?? '',
+        lastName: (names && names[1]) ?? '',
+        email: user.email ?? '',
+        role: 'student',
+        photoUrl: user.photoURL,
+        age: null,
+        location: null,
+        description: null,
+      });
     } catch (error) {
       console.error(error);
       if (error instanceof FirebaseError) {
@@ -359,6 +376,11 @@ const RegisterForm = () => {
                 firstName: values.firstName,
                 lastName: values.lastName,
                 email: values.email,
+                role: 'student',
+                photoUrl: null,
+                age: null,
+                location: null,
+                description: null,
               });
               setDialog({
                 dialogTitle: 'Úspešná registrácia',

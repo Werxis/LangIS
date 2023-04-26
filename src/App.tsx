@@ -21,9 +21,8 @@ import { useAuthUser } from './hooks';
 
 function App() {
   /* Undefined -> not loaded yet, Null -> logged out, User -> logged in */
-  const user = useAuthUser();
+  const { user } = useAuthUser();
   const isAuthenticated = user !== null && user !== undefined;
-  console.log('user: ', user);
 
   return (
     <RecoilRoot>
