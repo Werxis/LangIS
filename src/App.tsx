@@ -13,16 +13,16 @@ import LoaderWholePage from './components/LoaderWholePage';
 import NavBar from './components/NavBar';
 
 import { useAuthUser, useLoader } from './hooks';
+import Footer from './components/Footer';
 
 function App() {
   /* Undefined -> not loaded yet, Null -> logged out, User -> logged in */
   const { user, userLangIs } = useAuthUser();
   const [isLoaderWholePage] = useLoader();
-  console.log('user: ', user);
 
   return (
     <BrowserRouter>
-      {user === undefined || isLoaderWholePage ? (
+      {user === undefined || (user && !userLangIs) || isLoaderWholePage ? (
         <LoaderWholePage />
       ) : (
         <>
@@ -35,7 +35,7 @@ function App() {
             <Route
               path="/secret"
               element={
-                <AuthWrapper user={user}>
+                <AuthWrapper user={user} userLangIs={userLangIs}>
                   <Secret />
                 </AuthWrapper>
               }
@@ -43,12 +43,16 @@ function App() {
             <Route
               path="/profile"
               element={
-                <AuthWrapper user={user}>
-                  {(user) => <Profile user={user} />}
+                <AuthWrapper user={user} userLangIs={userLangIs}>
+                  {(user, userLangIs) => (
+                    <Profile user={user} userLangIs={userLangIs} />
+                  )}
                 </AuthWrapper>
               }
             />
           </Routes>
+
+          <Footer />
         </>
       )}
     </BrowserRouter>

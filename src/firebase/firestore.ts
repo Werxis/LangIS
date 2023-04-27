@@ -18,7 +18,7 @@ const db = getFirestore(app);
 
 // - - - -
 
-type UserRole = 'admin' | 'teacher' | 'student';
+export type UserRole = 'admin' | 'teacher' | 'student';
 
 // User Collection
 export type LangISUser = {
