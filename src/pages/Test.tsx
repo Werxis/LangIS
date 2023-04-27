@@ -163,8 +163,10 @@ const Test = () => {
               fileType="oneByOne"
               printFilesInfo
               fullWidth
+              accept="image/*"
               //helperText="test helper text.."
             />
+
             <Button variant="outlined" type="submit">
               Submit
             </Button>

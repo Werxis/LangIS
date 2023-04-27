@@ -13,6 +13,7 @@ interface FileInputProps {
   printFilesInfo?: boolean;
   id?: string;
   //label?: string;
+  accept?: string;
   required?: boolean;
   disabled?: boolean;
   fullWidth?: boolean;
@@ -108,7 +109,10 @@ const FileInput: FC<FileInputProps> = (props) => {
         sx={props.sx}
         // Main logic!!
         type="file"
-        inputProps={{ multiple: props.fileType === 'multiple' }}
+        inputProps={{
+          multiple: props.fileType === 'multiple',
+          accept: props.accept,
+        }}
         // value should not be null, consider using empty string!
         // value is automatically programatically set by the html input itself!
         // value={
