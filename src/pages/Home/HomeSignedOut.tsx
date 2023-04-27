@@ -80,22 +80,7 @@ const HomeSignedOut = () => {
         </Box>
       </Box>
 
-      {/* Footer */}
-      <Box
-        sx={{
-          height: '7vh', // HERE
-          backgroundColor: 'black',
-          color: 'white',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Typography variant="h6" component="span">
-          Copyright &copy; 2023, LangIS
-        </Typography>
-      </Box>
+      {/* Footer with height: '7vh' is also included, do not forget! */}
     </Box>
   );
 };
