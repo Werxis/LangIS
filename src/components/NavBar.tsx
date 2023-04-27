@@ -16,40 +16,47 @@ import { blue } from '@mui/material/colors';
 import LanguageSelect from './LanguageSelect';
 import Button from './Button';
 
-import emptyAccountImage from '../assets/icons/image_empty_account.jpg';
-
 import { useMediaDevice } from '../hooks';
 import { useIsLoginFormActive } from '../recoil/atoms';
 import { useNavigate } from 'react-router-dom';
 
 import { logout } from '../firebase/auth';
+import { LangIsUserWithId } from '../firebase/firestore';
+import { retrieveProfilePhotoUrl } from '../utils';
 
 // - - -
 
 interface NavBarProps {
   user: User | null; // user === null means that NotSigned.. otherwise SignedIn
+  userLangIs: LangIsUserWithId | null;
 }
 
-const NavBar: FC<NavBarProps> = ({ user }) => {
+const NavBar: FC<NavBarProps> = ({ user, userLangIs }) => {
   if (user === null) {
     return <NavBarSignOut />;
   }
 
-  return <NavBarSignIn />;
+  return <NavBarSignIn user={user} userLangIs={userLangIs} />;
 };
 
 export default NavBar;
 
 // - - -
 
-const NavBarSignIn = () => {
+interface NavBarSignInProps {
+  user: User;
+  userLangIs: LangIsUserWithId | null;
+}
+
+const NavBarSignIn: FC<NavBarSignInProps> = ({ user, userLangIs }) => {
   const { isMobile, deviceType } = useMediaDevice();
-  const navitate = useNavigate();
+  const navigate = useNavigate();
+  const avatarPhotoUrl = retrieveProfilePhotoUrl(user, userLangIs);
 
   const menuOptions: MenuOption[] = [
     {
       label: 'Profile',
-      onClick: () => navitate('/profile'),
+      onClick: () => navigate('/profile'),
       isDesktopOption: true,
     },
     {
@@ -121,7 +128,7 @@ const NavBarSignIn = () => {
         }}
       >
         <LanguageSelect />
-        <AvatarButton avatarSrc={emptyAccountImage} menuOptions={menuOptions} />
+        <AvatarButton avatarSrc={avatarPhotoUrl} menuOptions={menuOptions} />
       </Box>
     </Box>
   );

@@ -16,7 +16,7 @@ import { useAuthUser, useLoader } from './hooks';
 
 function App() {
   /* Undefined -> not loaded yet, Null -> logged out, User -> logged in */
-  const { user } = useAuthUser();
+  const { user, userLangIs } = useAuthUser();
   const [isLoaderWholePage] = useLoader();
   console.log('user: ', user);
 
@@ -26,7 +26,7 @@ function App() {
         <LoaderWholePage />
       ) : (
         <>
-          <NavBar user={user} />
+          <NavBar user={user} userLangIs={userLangIs} />
           <Routes>
             <Route path="/" element={<Home user={user} />} />
             <Route path="/test" element={<Test />} />
