@@ -5,7 +5,7 @@ interface SetDialogArgs {
   dialogTitle: string;
   dialogData: DialogData;
   submitLabel?: string;
-  onSubmit?: () => Promise<void>;
+  onSubmit?: () => void | Promise<void>;
   onClose?: () => void;
   dialogOptions?: DialogOptions;
 }

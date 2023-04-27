@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { User } from 'firebase/auth';
 import { LangIsUserWithId } from '../firebase/firestore';
 
@@ -15,7 +15,12 @@ import {
   TableCell,
 } from '@mui/material';
 import { retrieveProfilePhotoUrl } from '../utils';
-import { useMediaDevice } from '../hooks';
+import { useDialog, useMediaDevice } from '../hooks';
+
+import { uploadProfilePicture } from '../firebase/storage';
+import { updateUser } from '../firebase/firestore';
+import { useNavigate } from 'react-router-dom';
+import { StorageError } from 'firebase/storage';
 
 interface ProfilePageProps {
   user: User;
@@ -23,7 +28,43 @@ interface ProfilePageProps {
 }
 
 const Profile: FC<ProfilePageProps> = ({ user, userLangIs }) => {
+  const [profileImage, setProfileImage] = useState<File | null>(null);
   const { isMobile } = useMediaDevice();
+  const { setDialog } = useDialog();
+  const navigate = useNavigate();
+
+  console.log('profileImage: ', profileImage);
+
+  useEffect(() => {
+    if (!profileImage) {
+      return;
+    }
+    setDialog({
+      dialogTitle: 'Are you sure',
+      dialogData:
+        'Opravdu chcete zmeniť vašu profilovú fotku za vybranú fotku?',
+      submitLabel: 'Potvrdiť',
+      onSubmit: async () => {
+        try {
+          const urlOfImage = await uploadProfilePicture(user, profileImage);
+          await updateUser(userLangIs.uid, { photoUrl: urlOfImage });
+          setProfileImage(null);
+          navigate(0);
+          // TODO - some nicer feedback than basic alert
+          alert(
+            'Profilová fotka bola úspešne zmenena! Pre zobrazenie zmien je nutné refreshnúť stránku!'
+          );
+        } catch (error) {
+          if (error instanceof StorageError) {
+            alert(error.message);
+          }
+          alert('Uploading of your profile picture has failed!');
+        }
+      },
+      onClose: () => setProfileImage(null),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileImage]);
 
   const profilePhotoUrl = retrieveProfilePhotoUrl(user, userLangIs);
 
@@ -65,9 +106,27 @@ const Profile: FC<ProfilePageProps> = ({ user, userLangIs }) => {
             borderRadius: '10px',
             cursor: 'pointer',
           }}
+          onClick={() => {
+            const element = document.querySelector('#prof_pic_uploader');
+            const imgElement = element as HTMLImageElement;
+            imgElement.click();
+          }}
         />
 
-        <Typography variant="h3" component="h1">
+        {/* Helper input, not even displayed, programatically clicked */}
+        <input
+          type="file"
+          accept="image/*"
+          id="prof_pic_uploader"
+          style={{ display: 'none' }}
+          onChange={(e) => {
+            const files = e.currentTarget.files;
+            const selectedFile: File | null = files ? files[0] : null;
+            setProfileImage(selectedFile);
+          }}
+        />
+
+        <Typography variant="h3" component="h1" textAlign="center">
           {user.displayName ?? userLangIs.firstName + ' ' + userLangIs.lastName}
         </Typography>
 
