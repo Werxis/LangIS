@@ -10,6 +10,9 @@ import SingleSelect from '../components/forms/SingleSelect';
 import { SelectOptions } from '../components/forms/SingleSelect';
 import Checkbox from '../components/forms/Checkbox';
 import RadioGroup from '../components/forms/RadioGroup';
+import FileInput, {
+  FileInputValueWithoutNull,
+} from '../components/forms/FileInput';
 
 type Fruits = 'apple' | 'banana' | '';
 type Grades = 'A' | 'B' | 'C' | 'D' | 'E' | '';
@@ -76,6 +79,8 @@ const Test = () => {
             fruits: '' as Fruits,
             license: false,
             grade: 'C' as Grades,
+            age: '',
+            fileTest: '',
           }}
           onSubmit={(values) => console.log('values: ', values)}
           validationSchema={Yup.object({
@@ -85,6 +90,8 @@ const Test = () => {
             description: Yup.string().required(),
             fruits: Yup.mixed<Fruits>().required('Required select field'),
             grade: Yup.string().required().oneOf(['A', 'B', 'C']),
+            age: Yup.number().required().lessThan(140).moreThan(0),
+            fileTest: Yup.mixed<FileInputValueWithoutNull>().required(),
           })}
         >
           <Form>
@@ -148,6 +155,15 @@ const Test = () => {
                   value: 'E',
                 },
               ]}
+            />
+
+            <TextInput name="age" type="number" />
+            <FileInput
+              name="fileTest"
+              fileType="oneByOne"
+              printFilesInfo
+              fullWidth
+              //helperText="test helper text.."
             />
             <Button variant="outlined" type="submit">
               Submit

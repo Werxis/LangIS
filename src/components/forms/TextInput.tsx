@@ -7,7 +7,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 interface TextInputProps {
   name: string;
-  type: 'text' | 'email' | 'password';
+  type: 'text' | 'email' | 'password' | 'number';
   id?: string;
   label?: string;
   placeholder?: string;
