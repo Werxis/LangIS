@@ -11,7 +11,7 @@
   "plugins": ["prettier", "react", "react-hooks", "@typescript-eslint"],
   "parser": "@typescript-eslint/parser",
   "rules": {
-    "prettier/prettier": "error",
+    "prettier/prettier": ["error", { "endOfLine": "auto" }],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     // Add additional React and React Hooks rules as needed
