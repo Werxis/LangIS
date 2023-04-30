@@ -29,6 +29,7 @@ import Button from '../../components/Button';
 // Hooks
 import { useMediaDevice, useDialog } from '../../hooks';
 import { useIsLoginFormActive } from '../../recoil/atoms';
+import { Link } from 'react-router-dom';
 
 const HomeSignedOut = () => {
   const [isLoginFormActive] = useIsLoginFormActive();
@@ -95,6 +96,7 @@ const LoginForm = () => {
   >(null);
 
   const { isMobile } = useMediaDevice();
+  const [isLoginFormActive, setIsLoginFormActive] = useIsLoginFormActive();
 
   return (
     <>
@@ -172,6 +174,16 @@ const LoginForm = () => {
                 <Button type="submit" sx={{ width: isMobile ? '50%' : '40%' }}>
                   Prihlásenie
                 </Button>
+
+                <Typography>
+                  Ešte nemáte účet?{' '}
+                  <Link
+                    to="#"
+                    onClick={() => setIsLoginFormActive(!isLoginFormActive)}
+                  >
+                    Zaregistrujte sa!
+                  </Link>
+                </Typography>
 
                 <Box>
                   {submissionErrorMessage !== null && (
@@ -328,6 +340,7 @@ const RegisterForm = () => {
     string | null
   >(null);
   const { setDialog } = useDialog();
+  const [isLoginFormActive, setIsLoginFormActive] = useIsLoginFormActive();
 
   return (
     <>
@@ -476,6 +489,16 @@ const RegisterForm = () => {
                     )}
                   </Button>
                 </Box>
+
+                <Typography>
+                  Už máte účet?{' '}
+                  <Link
+                    to="#"
+                    onClick={() => setIsLoginFormActive(!isLoginFormActive)}
+                  >
+                    Prihláste sa!
+                  </Link>
+                </Typography>
 
                 {submissionErrorMessage !== null && (
                   <Typography color={'error'}>
