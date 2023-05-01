@@ -16,7 +16,7 @@ import { blue } from '@mui/material/colors';
 import LanguageSelect from './LanguageSelect';
 import Button from './Button';
 
-import { useMediaDevice } from '../hooks';
+import { useMediaDevice, useTranslation } from '../hooks';
 import { useIsLoginFormActive } from '../recoil/atoms';
 import { useNavigate } from 'react-router-dom';
 
@@ -208,6 +208,7 @@ const NavBarSignOut = () => {
   const [isLoginFormActive, setIsLoginFormActive] = useIsLoginFormActive();
   const [anchorElNav, setAnchorElNav] = useState<HTMLElement | null>(null);
   const { isMobile } = useMediaDevice();
+  const t = useTranslation();
 
   const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -237,7 +238,7 @@ const NavBarSignOut = () => {
           LangIS
         </Typography>
 
-        {!isMobile && <Button>O aplikaci</Button>}
+        {!isMobile && <Button>{t('about')}</Button>}
       </Box>
 
       {!isMobile && (
@@ -250,7 +251,7 @@ const NavBarSignOut = () => {
           }}
         >
           <Button onClick={() => setIsLoginFormActive(!isLoginFormActive)}>
-            {isLoginFormActive ? 'Registrácia' : 'Prihlásenie'}
+            {isLoginFormActive ? t('registration') : t('login')}
           </Button>
 
           <LanguageSelect />
@@ -291,11 +292,11 @@ const NavBarSignOut = () => {
                 }}
               >
                 <Typography>
-                  {isLoginFormActive ? 'Registrácia' : 'Prihlásenie'}
+                  {isLoginFormActive ? t('registration') : t('login')}
                 </Typography>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu}>
-                <Typography>O aplikaci</Typography>
+                <Typography>{t('about')}</Typography>
               </MenuItem>
             </Menu>
           </Box>
