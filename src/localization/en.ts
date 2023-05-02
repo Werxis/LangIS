@@ -3,4 +3,6 @@ export default {
   about: 'About',
   registration: 'Sign up',
   login: 'Log in',
+  courses: 'Courses',
+  coursesOffered: 'Our courses',
 };

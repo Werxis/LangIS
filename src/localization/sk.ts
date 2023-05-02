@@ -3,4 +3,5 @@ export default {
   about: 'O nás',
   registration: 'Registrácia',
   login: 'Prihlásenie',
+  courses: 'Kurzy',
 };

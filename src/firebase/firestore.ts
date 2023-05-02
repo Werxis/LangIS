@@ -92,3 +92,29 @@ export const deleteUser = async (uid: string) => {
 };
 
 // - - - - -
+export type Course = {
+  language?: string;
+  level?: string;
+  price?: number;
+  capacity?: number;
+};
+
+export const getCoursesCollectionRef = () =>
+  collection(db, 'courses') as CollectionReference<Course>;
+
+export const getCourses = async () => {
+  const coursesCollectionRef = getCoursesCollectionRef();
+  const querySnapshot = await getDocs(coursesCollectionRef);
+  const courses: Course[] = querySnapshot.docs.map((doc) => ({
+    ...doc.data(),
+  }));
+  return courses;
+};
+
+export const getOneCourse = async () => {
+  const coursesCollectionRef = getCoursesCollectionRef();
+  const querySnapshot = await getDocs(coursesCollectionRef);
+  const data = querySnapshot.docs.pop();
+  const course: Course = { ...data?.data() };
+  return course;
+};

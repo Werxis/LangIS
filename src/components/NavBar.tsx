@@ -52,6 +52,7 @@ const NavBarSignIn: FC<NavBarSignInProps> = ({ user, userLangIs }) => {
   const { isMobile, deviceType } = useMediaDevice();
   const navigate = useNavigate();
   const avatarPhotoUrl = retrieveProfilePhotoUrl(user, userLangIs);
+  const t = useTranslation();
 
   const menuOptions: MenuOption[] = [
     {
@@ -60,8 +61,8 @@ const NavBarSignIn: FC<NavBarSignInProps> = ({ user, userLangIs }) => {
       isDesktopOption: true,
     },
     {
-      label: 'Button 1',
-      onClick: () => console.log('Button 1'),
+      label: t('courses'),
+      onClick: () => navigate('/courses'),
       isDesktopOption: false,
     },
     {
@@ -111,7 +112,7 @@ const NavBarSignIn: FC<NavBarSignInProps> = ({ user, userLangIs }) => {
 
         {deviceType === 'desktop' && (
           <>
-            <Button>Button 1</Button>
+            <Button onClick={() => navigate('/courses')}>{t('courses')}</Button>
             <Button>Button 2</Button>
             <Button>Button 3</Button>
           </>
