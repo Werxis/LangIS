@@ -4,4 +4,7 @@ export default {
   registration: 'Registrácia',
   login: 'Prihlásenie',
   courses: 'Kurzy',
+  coursesOffered: 'Our courses',
+  noCoursesAvailable: 'It seems that there are currently no courses on offer.',
+  signUpToCourse: 'Sign up',
 };

@@ -5,4 +5,7 @@ export default {
   login: 'Log in',
   courses: 'Courses',
   coursesOffered: 'Our courses',
+  noCoursesAvailable:
+    'It seems that there are currently no courses on offer, please check back later.',
+  signUpToCourse: 'Sign up',
 };

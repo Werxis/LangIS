@@ -10,6 +10,10 @@ import {
   getDoc,
   updateDoc,
   deleteDoc,
+  FirestoreDataConverter,
+  DocumentData,
+  QueryDocumentSnapshot,
+  SnapshotOptions,
   // Timestamp
 } from 'firebase/firestore';
 import { app } from './app';
@@ -93,28 +97,33 @@ export const deleteUser = async (uid: string) => {
 
 // - - - - -
 export type Course = {
-  language?: string;
-  level?: string;
-  price?: number;
-  capacity?: number;
+  language: string;
+  level: string;
+  price: number;
+  capacity: number;
+  students: string[];
 };
 
+export type CourseWithId = Course & { uid: string };
+
+export const getCourseDocumentRef = (uid: string) =>
+  doc(db, 'courses', uid) as DocumentReference<Course>;
+
 export const getCoursesCollectionRef = () =>
+  // TODO change to .withConverter()
   collection(db, 'courses') as CollectionReference<Course>;
 
 export const getCourses = async () => {
   const coursesCollectionRef = getCoursesCollectionRef();
   const querySnapshot = await getDocs(coursesCollectionRef);
-  const courses: Course[] = querySnapshot.docs.map((doc) => ({
+  const courses: CourseWithId[] = querySnapshot.docs.map((doc) => ({
+    uid: doc.id,
     ...doc.data(),
   }));
   return courses;
 };
 
-export const getOneCourse = async () => {
-  const coursesCollectionRef = getCoursesCollectionRef();
-  const querySnapshot = await getDocs(coursesCollectionRef);
-  const data = querySnapshot.docs.pop();
-  const course: Course = { ...data?.data() };
-  return course;
+export const updateCourse = async (uid: string, fields: Partial<Course>) => {
+  const courseRef = getCourseDocumentRef(uid);
+  await updateDoc(courseRef, { ...fields });
 };
