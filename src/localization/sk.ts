@@ -7,4 +7,9 @@ export default {
   coursesOffered: 'Our courses',
   noCoursesAvailable: 'It seems that there are currently no courses on offer.',
   signUpToCourse: 'Sign up',
+  capacity: 'Capacity',
+  languageLevel: 'Language level',
+  enrollInCourse: 'Enroll',
+  cancelEnrollment: 'Cancel enrollment',
+  courseFull: 'Course is full',
 };

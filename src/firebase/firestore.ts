@@ -102,6 +102,7 @@ export type Course = {
   price: number;
   capacity: number;
   students: string[];
+  teacher: string;
 };
 
 export type CourseWithId = Course & { uid: string };

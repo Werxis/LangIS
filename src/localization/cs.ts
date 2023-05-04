@@ -4,7 +4,12 @@ export default {
   registration: 'Registrace',
   login: 'Přihlášení',
   courses: 'Kurzy',
-  coursesOffered: 'Our courses',
+  coursesOffered: 'Nabídka kurzů',
   noCoursesAvailable: 'It seems that there are currently no courses on offer.',
   signUpToCourse: 'Sign up',
+  capacity: 'Kapacita',
+  languageLevel: 'Úroveň',
+  enrollInCourse: 'Enroll',
+  cancelEnrollment: 'Cancel enrollment',
+  courseFull: 'Course is full',
 };

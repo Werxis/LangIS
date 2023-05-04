@@ -4,6 +4,7 @@ import {
   CourseWithId,
   LangIsUserWithId,
   getCourses,
+  getCoursesCollectionRef,
   updateCourse,
 } from '../../firebase/firestore';
 import { FC, useEffect, useState } from 'react';
@@ -15,8 +16,8 @@ import {
   CardContent,
   Container,
   Typography,
-  colors,
 } from '@mui/material';
+import { useFirestoreOnSnapshot } from '../../hooks';
 
 interface CoursesPageProps {
   user: User;
@@ -25,19 +26,11 @@ interface CoursesPageProps {
 
 const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
   const t = useTranslation();
-  // TODO replace with useFirestoreOnSnapshot
-  const [courses, setCourses] = useState<CourseWithId[]>();
+  const { data: courses, isLoading } = useFirestoreOnSnapshot(
+    getCoursesCollectionRef()
+  );
 
-  // TODO useFetch hook (arg = callback fn)
-  useEffect(() => {
-    const fetchCourses = async () => {
-      const result = await getCourses();
-      setCourses(result);
-    };
-    fetchCourses();
-  }, []);
-
-  const signUpUserForCourse = async (course: CourseWithId) => {
+  const EnrollUserInCourse = async (course: CourseWithId) => {
     const isCapacityExceeded = course.students.length >= course.capacity;
     const isStudentAlreadyInCourse = course.students.includes(userLangIs.uid);
     if (!isCapacityExceeded && !isStudentAlreadyInCourse) {
@@ -47,9 +40,17 @@ const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
     }
   };
 
+  const CancelUserEnrollment = async (course: CourseWithId) => {
+    course.students = course.students.filter(
+      (studentUid) => studentUid !== userLangIs.uid
+    );
+    const { uid, students } = course;
+    await updateCourse(uid, { students });
+  };
+
   return (
     <Container>
-      <Typography variant="h4" align="center">
+      <Typography sx={{ m: '0.5em' }} variant="h4" align="center">
         {t('courses')}
       </Typography>
       <Box
@@ -62,21 +63,30 @@ const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
       >
         {courses &&
           courses.map((course) => (
-            <Card key={course.uid} sx={{ minWidth: '90%', m: '1em' }}>
+            <Card key={course.uid} sx={{ minWidth: '45%', m: '1em' }}>
               <CardContent>
                 <Typography>{course.language}</Typography>
-                <Typography>{course.level}</Typography>
-                <Typography>{course.capacity}</Typography>
+                <Typography>
+                  {t('languageLevel')}: {course.level}
+                </Typography>
+                <Typography>
+                  {t('capacity')}: {course.students.length}/{course.capacity}
+                </Typography>
                 <Typography>{course.price} CZK</Typography>
               </CardContent>
               <CardActions>
-                {userLangIs.role === 'student' ? (
-                  <Button onClick={() => signUpUserForCourse(course)}>
-                    {t('signUpToCourse')}
-                  </Button>
-                ) : (
-                  <></>
-                )}
+                {userLangIs.role === 'student' &&
+                  (course.students.includes(userLangIs.uid) ? (
+                    <Button onClick={() => CancelUserEnrollment(course)}>
+                      {t('cancelEnrollment')}
+                    </Button>
+                  ) : course.students.length < course.capacity ? (
+                    <Button onClick={() => EnrollUserInCourse(course)}>
+                      {t('enrollInCourse')}
+                    </Button>
+                  ) : (
+                    <Typography>{t('courseFull')}</Typography>
+                  ))}
               </CardActions>
             </Card>
           ))}
