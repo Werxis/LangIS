@@ -2,9 +2,10 @@ import { User } from 'firebase/auth';
 import useTranslation from '../../hooks/useTranslation';
 import {
   CourseWithId,
+  CourseWithTeacher,
   LangIsUserWithId,
-  getCourses,
   getCoursesCollectionRef,
+  getUsersCollectionRef,
   updateCourse,
 } from '../../firebase/firestore';
 import { FC, useEffect, useState } from 'react';
@@ -26,9 +27,22 @@ interface CoursesPageProps {
 
 const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
   const t = useTranslation();
-  const { data: courses, isLoading } = useFirestoreOnSnapshot(
-    getCoursesCollectionRef()
-  );
+  const { data: courses } = useFirestoreOnSnapshot(getCoursesCollectionRef());
+  const { data: teachers } = useFirestoreOnSnapshot(getUsersCollectionRef());
+  const [coursesWithTeacher, setCoursesWithTeacher] = useState<
+    CourseWithTeacher[]
+  >([]);
+
+  useEffect(() => {
+    const data: CourseWithTeacher[] = [];
+    courses.forEach((course) => {
+      const teacher = teachers.find((teacher) => teacher.uid == course.teacher);
+      if (teacher) {
+        data.push({ ...course, ...teacher });
+      }
+    });
+    setCoursesWithTeacher(data);
+  }, [courses, teachers]);
 
   const EnrollUserInCourse = async (course: CourseWithId) => {
     const isCapacityExceeded = course.students.length >= course.capacity;
@@ -61,13 +75,16 @@ const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
           flexWrap: 'wrap',
         }}
       >
-        {courses &&
-          courses.map((course) => (
+        {coursesWithTeacher &&
+          coursesWithTeacher.map((course) => (
             <Card key={course.uid} sx={{ minWidth: '45%', m: '1em' }}>
               <CardContent>
                 <Typography>{course.language}</Typography>
                 <Typography>
                   {t('languageLevel')}: {course.level}
+                </Typography>
+                <Typography>
+                  {t('teacher')}: {course.firstName} {course.lastName}
                 </Typography>
                 <Typography>
                   {t('capacity')}: {course.students.length}/{course.capacity}

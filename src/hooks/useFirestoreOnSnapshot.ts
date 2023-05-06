@@ -24,7 +24,8 @@ const useFirestoreOnSnapshot = <T>(collectionRef: CollectionReference<T>) => {
     return () => {
       unsubscribe();
     };
-  }, [collectionRef]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return { data, isLoading };
 };

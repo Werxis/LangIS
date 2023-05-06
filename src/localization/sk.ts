@@ -12,4 +12,5 @@ export default {
   enrollInCourse: 'Enroll',
   cancelEnrollment: 'Cancel enrollment',
   courseFull: 'Course is full',
+  teacher: 'Teacher',
 };

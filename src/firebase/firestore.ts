@@ -107,12 +107,16 @@ export type Course = {
 
 export type CourseWithId = Course & { uid: string };
 
+export type CourseWithTeacher = CourseWithId & LangIsUserWithId;
+
 export const getCourseDocumentRef = (uid: string) =>
   doc(db, 'courses', uid) as DocumentReference<Course>;
 
-export const getCoursesCollectionRef = () =>
+export const getCoursesCollectionRef = () => {
   // TODO change to .withConverter()
-  collection(db, 'courses') as CollectionReference<Course>;
+  const coll = collection(db, 'courses') as CollectionReference<Course>;
+  return coll;
+};
 
 export const getCourses = async () => {
   const coursesCollectionRef = getCoursesCollectionRef();
