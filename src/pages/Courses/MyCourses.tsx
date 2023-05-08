@@ -11,12 +11,12 @@ import {
   Box,
   Button,
   Card,
-  CardActions,
   CardContent,
   Container,
   Typography,
 } from '@mui/material';
 import Courses from './Courses';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface MyCoursesPageProps {
   user: User;
@@ -26,6 +26,7 @@ interface MyCoursesPageProps {
 const MyCourses: FC<MyCoursesPageProps> = ({ user, userLangIs }) => {
   const t = useTranslation();
   const [userCourses, setUserCourses] = useState<CourseWithId[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,7 +54,18 @@ const MyCourses: FC<MyCoursesPageProps> = ({ user, userLangIs }) => {
           userCourses.map((course) => (
             <Card key={course.uid} sx={{ width: '45%', m: '1em' }}>
               <CardContent>
-                <Typography>{course.name}</Typography>
+                <Typography>
+                  <Link to={course.uid}>{course.name}</Link>
+                </Typography>
+                <Typography>
+                  <Button
+                    onClick={() => {
+                      navigate(`/my-courses/${course.uid}`);
+                    }}
+                  >
+                    {course.name}
+                  </Button>
+                </Typography>
                 <Typography>{course.description}</Typography>
                 <Typography>{course.language}</Typography>
                 <Typography>

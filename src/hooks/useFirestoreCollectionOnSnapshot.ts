@@ -6,7 +6,9 @@ import { onSnapshot, CollectionReference } from 'firebase/firestore';
  * @param collectionRef is CollectionReference to the NoSQL table
  * @returns all items present in the supplied collection table + listen to changes
  */
-const useFirestoreOnSnapshot = <T>(collectionRef: CollectionReference<T>) => {
+const useFirestoreCollectionOnSnapshot = <T>(
+  collectionRef: CollectionReference<T>
+) => {
   type TWithId = T & { uid: string };
   const [data, setData] = useState<TWithId[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -30,4 +32,4 @@ const useFirestoreOnSnapshot = <T>(collectionRef: CollectionReference<T>) => {
   return { data, isLoading };
 };
 
-export default useFirestoreOnSnapshot;
+export default useFirestoreCollectionOnSnapshot;

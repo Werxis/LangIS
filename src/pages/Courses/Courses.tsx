@@ -9,8 +9,6 @@ import {
   deleteCourse,
   getCoursesCollectionRef,
   getTeachers,
-  getUser,
-  getUsersCollectionRef,
   updateCourse,
 } from '../../firebase/firestore';
 import { FC, useEffect, useState } from 'react';
@@ -26,19 +24,12 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  TextField,
   Typography,
 } from '@mui/material';
 import { useFirestoreOnSnapshot, useMediaDevice } from '../../hooks';
 import { TextInput } from '../../components/forms';
-import { useIsLoginFormActive } from '../../recoil/atoms';
 import * as Yup from 'yup';
-import {
-  AlignHorizontalCenter,
-  Close,
-  Delete,
-  Edit,
-} from '@mui/icons-material';
+import { Close, Delete, Edit } from '@mui/icons-material';
 import { Formik, Form } from 'formik';
 
 interface CoursesPageProps {
