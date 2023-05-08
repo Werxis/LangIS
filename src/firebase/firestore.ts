@@ -12,6 +12,7 @@ import {
   getDoc,
   updateDoc,
   deleteDoc,
+  Timestamp,
   // Timestamp
 } from 'firebase/firestore';
 import { app } from './app';
@@ -174,7 +175,7 @@ export const deleteCourse = async (courseUid: string) => {
 // - - - - -
 export type Message = {
   contents: string;
-  timestamp: number;
+  timestamp: Timestamp;
   userName: string;
   userPhotoUrl: string | null;
   userUid: string;
@@ -198,4 +199,9 @@ export const getMessages = async (courseUid: string) => {
     uid: doc.id,
   }));
   return messages;
+};
+
+export const addMessage = async (message: Message, courseUid: string) => {
+  const collectionRef = getMessagesCollectionRef(courseUid);
+  return await addDoc(collectionRef, { ...message });
 };
