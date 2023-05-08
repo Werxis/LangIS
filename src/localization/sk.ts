@@ -20,4 +20,5 @@ export default {
   price: 'Price',
   myCourses: 'My courses',
   noUserCourses: "You aren't enrolled in any courses.",
+  groupChat: 'Group chat',
 };

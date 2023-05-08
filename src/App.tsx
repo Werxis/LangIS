@@ -17,6 +17,7 @@ import Footer from './components/Footer';
 import Courses from './pages/Courses/Courses';
 import MyCourses from './pages/Courses/MyCourses';
 import MyCourseDetail from './pages/Courses/MyCourseDetail';
+import CourseChat from './pages/Courses/CourseChat';
 
 function App() {
   /* Undefined -> not loaded yet, Null -> logged out, User -> logged in */
@@ -79,6 +80,16 @@ function App() {
                 <AuthWrapper user={user} userLangIs={userLangIs}>
                   {(user, userLangIs) => (
                     <MyCourseDetail user={user} userLangIs={userLangIs} />
+                  )}
+                </AuthWrapper>
+              }
+            />
+            <Route
+              path="/my-courses/:courseUid/chat"
+              element={
+                <AuthWrapper user={user} userLangIs={userLangIs}>
+                  {(user, userLangIs) => (
+                    <CourseChat user={user} userLangIs={userLangIs} />
                   )}
                 </AuthWrapper>
               }

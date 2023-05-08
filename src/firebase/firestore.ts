@@ -12,10 +12,6 @@ import {
   getDoc,
   updateDoc,
   deleteDoc,
-  FirestoreDataConverter,
-  DocumentData,
-  QueryDocumentSnapshot,
-  SnapshotOptions,
   // Timestamp
 } from 'firebase/firestore';
 import { app } from './app';
@@ -174,4 +170,32 @@ export const addCourse = async (course: Course) => {
 export const deleteCourse = async (courseUid: string) => {
   const courseDocRef = getCourseDocumentRef(courseUid);
   await deleteDoc(courseDocRef);
+};
+// - - - - -
+export type Message = {
+  contents: string;
+  timestamp: number;
+  userName: string;
+  userPhotoUrl: string | null;
+  userUid: string;
+};
+
+export type MessageWithId = Message & { uid: string };
+
+export const getMessagesCollectionRef = (courseUid: string) => {
+  const coll = collection(
+    db,
+    `courses/${courseUid}/messages`
+  ) as CollectionReference<Message>;
+  return coll;
+};
+
+export const getMessages = async (courseUid: string) => {
+  const collectionRef = getMessagesCollectionRef(courseUid);
+  const querySnaphot = await getDocs(collectionRef);
+  const messages: MessageWithId[] = querySnaphot.docs.map((doc) => ({
+    ...doc.data(),
+    uid: doc.id,
+  }));
+  return messages;
 };

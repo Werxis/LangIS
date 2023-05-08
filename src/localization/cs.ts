@@ -20,4 +20,5 @@ export default {
   price: 'Price',
   myCourses: 'Moje kurzy',
   noUserCourses: 'Nejste zapsán v žádném kurzu',
+  groupChat: 'Skupinový chat',
 };
