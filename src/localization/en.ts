@@ -14,4 +14,9 @@ export default {
   cancelEnrollment: 'Cancel enrollment',
   courseFull: 'Course is full',
   teacher: 'Teacher',
+  addNewCourse: 'Add new course',
+  courseName: 'Course name',
+  courseDescription: 'Course description',
+  courseLanguage: 'Course language',
+  price: 'Price',
 };

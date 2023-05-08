@@ -1,6 +1,8 @@
 import {
   getFirestore,
   collection,
+  query,
+  where,
   CollectionReference,
   doc,
   DocumentReference,
@@ -97,12 +99,21 @@ export const deleteUser = async (uid: string) => {
 
 // - - - - -
 export type Course = {
+  name: string;
+  description: string;
   language: string;
   level: string;
   price: number;
   capacity: number;
   students: string[];
-  teacher: string;
+  teacher: CourseTeacher;
+};
+
+export type CourseTeacher = {
+  uid: string;
+  firstName: string;
+  lastName: string;
+  photoUrl: string | null;
 };
 
 export type CourseWithId = Course & { uid: string };
@@ -128,7 +139,21 @@ export const getCourses = async () => {
   return courses;
 };
 
+export const getTeachers = async () => {
+  const q = query(getUsersCollectionRef(), where('role', '==', 'teacher'));
+  const querySnapshot = await getDocs(q);
+  const users: LangIsUserWithId[] = querySnapshot.docs.map((doc) => ({
+    ...doc.data(),
+    uid: doc.id,
+  }));
+  return users;
+};
+
 export const updateCourse = async (uid: string, fields: Partial<Course>) => {
   const courseRef = getCourseDocumentRef(uid);
   await updateDoc(courseRef, { ...fields });
+};
+
+export const addCourse = async (course: Course) => {
+  return await addDoc(getCoursesCollectionRef(), { ...course });
 };
