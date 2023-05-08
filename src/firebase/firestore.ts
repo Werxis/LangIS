@@ -139,14 +139,27 @@ export const getCourses = async () => {
   return courses;
 };
 
-export const getTeachers = async () => {
-  const q = query(getUsersCollectionRef(), where('role', '==', 'teacher'));
+export const getUserCourses = async (userUid: string) => {
+  const q = query(
+    getCoursesCollectionRef(),
+    where('students', 'array-contains', userUid)
+  );
   const querySnapshot = await getDocs(q);
-  const users: LangIsUserWithId[] = querySnapshot.docs.map((doc) => ({
+  const userCourses: CourseWithId[] = querySnapshot.docs.map((doc) => ({
     ...doc.data(),
     uid: doc.id,
   }));
-  return users;
+  return userCourses;
+};
+
+export const getTeachers = async () => {
+  const q = query(getUsersCollectionRef(), where('role', '==', 'teacher'));
+  const querySnapshot = await getDocs(q);
+  const teachers: LangIsUserWithId[] = querySnapshot.docs.map((doc) => ({
+    ...doc.data(),
+    uid: doc.id,
+  }));
+  return teachers;
 };
 
 export const updateCourse = async (uid: string, fields: Partial<Course>) => {

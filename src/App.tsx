@@ -15,6 +15,7 @@ import NavBar from './components/NavBar';
 import { useAuthUser, useLoader } from './hooks';
 import Footer from './components/Footer';
 import Courses from './pages/Courses/Courses';
+import MyCourses from './pages/Courses/MyCourses';
 
 function App() {
   /* Undefined -> not loaded yet, Null -> logged out, User -> logged in */
@@ -57,6 +58,16 @@ function App() {
                 <AuthWrapper user={user} userLangIs={userLangIs}>
                   {(user, userLangIs) => (
                     <Courses user={user} userLangIs={userLangIs} />
+                  )}
+                </AuthWrapper>
+              }
+            />
+            <Route
+              path="/my-courses"
+              element={
+                <AuthWrapper user={user} userLangIs={userLangIs}>
+                  {(user, userLangIs) => (
+                    <MyCourses user={user} userLangIs={userLangIs} />
                   )}
                 </AuthWrapper>
               }

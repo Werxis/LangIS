@@ -18,4 +18,6 @@ export default {
   courseDescription: 'Course description',
   courseLanguage: 'Course language',
   price: 'Price',
+  myCourses: 'Moje kurzy',
+  noUserCourses: 'Nejste zapsán v žádném kurzu',
 };

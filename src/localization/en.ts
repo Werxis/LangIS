@@ -19,4 +19,6 @@ export default {
   courseDescription: 'Course description',
   courseLanguage: 'Course language',
   price: 'Price',
+  myCourses: 'My courses',
+  noUserCourses: "You aren't enrolled in any courses.",
 };
