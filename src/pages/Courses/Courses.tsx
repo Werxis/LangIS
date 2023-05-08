@@ -70,7 +70,8 @@ const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
     };
     const testCourse: Course = {
       name: 'Kurz špatnělštiny test',
-      description: 'Tohle je velmi krátký popisek',
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       language: 'espanol',
       level: 'A2',
       price: 4000,
@@ -87,9 +88,16 @@ const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
         {t('courses')}
       </Typography>
       {/* TODO delete test button */}
-      <Button onClick={addCourseTest}>Add course (TEST)</Button>
-      {/* TODO change to admin */}
-      {userLangIs.role === 'student' && isAddCourseFormActive ? (
+      {userLangIs.role === 'admin' && (
+        <Button onClick={addCourseTest}>Add course (TEST)</Button>
+      )}
+      {!(userLangIs.role === 'admin') ? (
+        <></>
+      ) : !isAddCourseFormActive ? (
+        <Button onClick={() => setIsAddCourseFormActive(true)}>
+          {t('addNewCourse')}
+        </Button>
+      ) : (
         <Box
           sx={{
             position: 'fixed',
@@ -102,6 +110,7 @@ const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
             padding: '20px',
             maxWidth: '500px',
             width: '100%',
+            zIndex: '1',
           }}
         >
           <IconButton
@@ -120,10 +129,6 @@ const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
           </IconButton>
           <AddCourseForm />
         </Box>
-      ) : (
-        <Button onClick={() => setIsAddCourseFormActive(true)}>
-          {t('addNewCourse')}
-        </Button>
       )}
       <Box
         sx={{
@@ -178,16 +183,20 @@ const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
                   ) : (
                     <Typography>{t('courseFull')}</Typography>
                   ))}
-                <IconButton>
-                  <Edit />
-                </IconButton>
-                <IconButton
-                  onClick={() => {
-                    deleteCourse(course.uid);
-                  }}
-                >
-                  <Delete />
-                </IconButton>
+                {userLangIs.role === 'admin' && (
+                  <>
+                    <IconButton>
+                      <Edit />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => {
+                        deleteCourse(course.uid);
+                      }}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </>
+                )}
               </CardActions>
             </Card>
           ))}
