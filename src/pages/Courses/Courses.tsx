@@ -1,12 +1,15 @@
 import { User } from 'firebase/auth';
 import useTranslation from '../../hooks/useTranslation';
 import {
+  Course,
   CourseTeacher,
   CourseWithId,
   LangIsUserWithId,
   addCourse,
+  deleteCourse,
   getCoursesCollectionRef,
   getTeachers,
+  getUser,
   getUsersCollectionRef,
   updateCourse,
 } from '../../firebase/firestore';
@@ -30,7 +33,12 @@ import { useFirestoreOnSnapshot, useMediaDevice } from '../../hooks';
 import { TextInput } from '../../components/forms';
 import { useIsLoginFormActive } from '../../recoil/atoms';
 import * as Yup from 'yup';
-import { Close } from '@mui/icons-material';
+import {
+  AlignHorizontalCenter,
+  Close,
+  Delete,
+  Edit,
+} from '@mui/icons-material';
 import { Formik, Form } from 'formik';
 
 interface CoursesPageProps {
@@ -42,6 +50,7 @@ const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
   const t = useTranslation();
   const { data: courses } = useFirestoreOnSnapshot(getCoursesCollectionRef());
   const [isAddCourseFormActive, setIsAddCourseFormActive] = useState(false);
+  const { deviceType } = useMediaDevice();
 
   const enrollUserInCourse = async (course: CourseWithId) => {
     const isCapacityExceeded = course.students.length >= course.capacity;
@@ -61,11 +70,33 @@ const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
     await updateCourse(uid, { students });
   };
 
+  const addCourseTest = async () => {
+    const courseTeacher: CourseTeacher = {
+      uid: '1UDKVTO7h8TMpgkFgxcD',
+      firstName: 'test',
+      lastName: 'děda',
+      photoUrl: null,
+    };
+    const testCourse: Course = {
+      name: 'Kurz špatnělštiny test',
+      description: 'Tohle je velmi krátký popisek',
+      language: 'espanol',
+      level: 'A2',
+      price: 4000,
+      capacity: 15,
+      students: [],
+      teacher: courseTeacher,
+    };
+    await addCourse(testCourse);
+  };
+
   return (
     <Container>
       <Typography sx={{ m: '0.5em' }} variant="h4" align="center">
         {t('courses')}
       </Typography>
+      {/* TODO delete test button */}
+      <Button onClick={addCourseTest}>Add course (TEST)</Button>
       {/* TODO change to admin */}
       {userLangIs.role === 'student' && isAddCourseFormActive ? (
         <Box
@@ -113,7 +144,18 @@ const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
       >
         {courses &&
           courses.map((course) => (
-            <Card key={course.uid} sx={{ width: '45%', m: '1em' }}>
+            <Card
+              key={course.uid}
+              sx={{
+                width:
+                  deviceType === 'mobile'
+                    ? '100%'
+                    : deviceType === 'tablet'
+                    ? '40%'
+                    : '30%',
+                m: '1em',
+              }}
+            >
               <CardContent>
                 <Typography>{course.name}</Typography>
                 <Typography>{course.description}</Typography>
@@ -132,7 +174,7 @@ const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
                   {t('price')}: {course.price} CZK
                 </Typography>
               </CardContent>
-              <CardActions>
+              <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
                 {userLangIs.role === 'student' &&
                   (course.students.includes(userLangIs.uid) ? (
                     <Button onClick={() => cancelUserEnrollment(course)}>
@@ -145,6 +187,16 @@ const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
                   ) : (
                     <Typography>{t('courseFull')}</Typography>
                   ))}
+                <IconButton>
+                  <Edit />
+                </IconButton>
+                <IconButton
+                  onClick={() => {
+                    deleteCourse(course.uid);
+                  }}
+                >
+                  <Delete />
+                </IconButton>
               </CardActions>
             </Card>
           ))}

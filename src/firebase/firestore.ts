@@ -170,3 +170,8 @@ export const updateCourse = async (uid: string, fields: Partial<Course>) => {
 export const addCourse = async (course: Course) => {
   return await addDoc(getCoursesCollectionRef(), { ...course });
 };
+
+export const deleteCourse = async (courseUid: string) => {
+  const courseDocRef = getCourseDocumentRef(courseUid);
+  await deleteDoc(courseDocRef);
+};
