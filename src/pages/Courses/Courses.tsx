@@ -9,6 +9,7 @@ import {
   deleteCourse,
   getCoursesCollectionRef,
   getTeachers,
+  getTeachersQuery,
   updateCourse,
 } from '../../firebase/firestore';
 import { FC, useEffect, useState } from 'react';
@@ -31,6 +32,7 @@ import { TextInput, SingleSelect } from '../../components/forms';
 import * as Yup from 'yup';
 import { Close, Delete, Edit } from '@mui/icons-material';
 import { Formik, Form } from 'formik';
+import useFirestoreQueryOnSnapshot from '../../hooks/useFirestoreQueryOnSnapshot';
 
 interface CoursesPageProps {
   user: User;
@@ -211,15 +213,7 @@ export default Courses;
 const AddCourseForm = () => {
   const t = useTranslation();
   const [selectedTeacher, setSelectedTeacher] = useState('');
-  const [teachers, setTeachers] = useState<LangIsUserWithId[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getTeachers();
-      setTeachers(data);
-    };
-    fetchData();
-  }, []);
+  const { data: teachers } = useFirestoreQueryOnSnapshot(getTeachersQuery());
 
   const [submissionErrorMessage, setSubmissionErrorMessage] = useState<
     string | null
@@ -227,7 +221,6 @@ const AddCourseForm = () => {
 
   const selectTeacher = (e: SelectChangeEvent) => {
     setSelectedTeacher(e.target.value);
-    console.log(selectedTeacher);
   };
 
   return (

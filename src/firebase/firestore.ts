@@ -13,6 +13,7 @@ import {
   updateDoc,
   deleteDoc,
   Timestamp,
+  orderBy,
   // Timestamp
 } from 'firebase/firestore';
 import { app } from './app';
@@ -159,6 +160,9 @@ export const getTeachers = async () => {
   return teachers;
 };
 
+export const getTeachersQuery = () =>
+  query(getUsersCollectionRef(), where('role', '==', 'teacher'));
+
 export const updateCourse = async (uid: string, fields: Partial<Course>) => {
   const courseRef = getCourseDocumentRef(uid);
   await updateDoc(courseRef, { ...fields });
@@ -199,6 +203,11 @@ export const getMessages = async (courseUid: string) => {
     uid: doc.id,
   }));
   return messages;
+};
+
+export const getMessagesOrderedQuery = (courseUid: string) => {
+  const messagesCollectionRef = getMessagesCollectionRef(courseUid);
+  return query(messagesCollectionRef, orderBy('timestamp'));
 };
 
 export const addMessage = async (message: Message, courseUid: string) => {

@@ -7,6 +7,7 @@ import {
   addMessage,
   getCourseDocumentRef,
   getMessagesCollectionRef,
+  getMessagesOrderedQuery,
 } from '../../firebase/firestore';
 import useFirestoreDocumentOnSnapshot from '../../hooks/useFirestoreDocumentOnSnapshot';
 import {
@@ -25,6 +26,7 @@ import useFirestoreCollectionOnSnapshot from '../../hooks/useFirestoreCollection
 import Button from '../../components/Button';
 import { Timestamp, serverTimestamp } from 'firebase/firestore';
 import { Send } from '@mui/icons-material';
+import useFirestoreQueryOnSnapshot from '../../hooks/useFirestoreQueryOnSnapshot';
 
 interface MyCourseChatPageProps {
   user: User;
@@ -37,9 +39,13 @@ const MyCourseDetail: FC<MyCourseChatPageProps> = ({ user, userLangIs }) => {
   const [courseRef] = useState(getCourseDocumentRef(courseUid as string));
   const { data: course } = useFirestoreDocumentOnSnapshot(courseRef);
 
-  const [messagesRef] = useState(getMessagesCollectionRef(courseUid as string));
-  const { data: messages } = useFirestoreCollectionOnSnapshot(messagesRef);
+  //   const [messagesRef] = useState(getMessagesCollectionRef(courseUid as string));
+  //   const { data: messages } = useFirestoreCollectionOnSnapshot(messagesRef);
   // TODO order by ascending timestamp
+  const [messagesQuery] = useState(
+    getMessagesOrderedQuery(courseUid as string)
+  );
+  const { data: messages } = useFirestoreQueryOnSnapshot(messagesQuery);
 
   const [messageContent, setMessageContent] = useState('');
 
@@ -59,7 +65,7 @@ const MyCourseDetail: FC<MyCourseChatPageProps> = ({ user, userLangIs }) => {
 
   return (
     <Container>
-      <Box sx={{ maxHeight: '75vh', overflow: 'auto' }}>
+      <Box sx={{ height: '75vh', overflow: 'auto' }}>
         <Typography sx={{ m: '0.5em' }} variant="h4" align="center">
           {course?.name}
         </Typography>
@@ -114,23 +120,16 @@ const MyCourseDetail: FC<MyCourseChatPageProps> = ({ user, userLangIs }) => {
                     p: '0.5em 0.8em',
                   }}
                 >
-                  <Typography>{message.userName}</Typography>
+                  <Typography sx={{ fontWeight: 'bold' }}>
+                    {message.userName}
+                  </Typography>
                   <Typography>{message.contents}</Typography>
                 </Box>
               </Box>
             ))}
         </Box>
       </Box>
-      <Box
-      // sx={{
-      //   position: 'fixed',
-      //   left: 0,
-      //   width: '100vw',
-      //   p: 0,
-      //   m: 'auto 2em',
-      //   backgroundColor: 'red',
-      // }}
-      >
+      <Box>
         <OutlinedInput
           sx={{ backgroundColor: 'white' }}
           placeholder="Aa"

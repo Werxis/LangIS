@@ -1,17 +1,15 @@
 import { useState, useEffect } from 'react';
-import { onSnapshot, DocumentReference } from 'firebase/firestore';
+import { onSnapshot, Query } from 'firebase/firestore';
 
-const useFirestoreDocumentOnSnapshot = <T>(
-  documentRef: DocumentReference<T>
-) => {
+const useFirestoreQueryOnSnapshot = <T>(query: Query<T>) => {
   type TWithId = T & { uid: string };
-  const [data, setData] = useState<TWithId>();
+  const [data, setData] = useState<TWithId[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(documentRef, (snapshot) => {
+    const unsubscribe = onSnapshot(query, (snapshot) => {
       setIsLoading(true);
-      const d = { ...(snapshot.data() as T), uid: snapshot.id };
+      const d = snapshot.docs.map((doc) => ({ ...doc.data(), uid: doc.id }));
       setData(d);
       setIsLoading(false);
     });
@@ -25,4 +23,4 @@ const useFirestoreDocumentOnSnapshot = <T>(
   return { data, isLoading };
 };
 
-export default useFirestoreDocumentOnSnapshot;
+export default useFirestoreQueryOnSnapshot;
