@@ -137,7 +137,7 @@ export const getCourses = async () => {
   return courses;
 };
 
-export const getUserCourses = async (userUid: string) => {
+export const getUserCourses = async (userUid: string, userRole: string) => {
   const q = query(
     getCoursesCollectionRef(),
     where('students', 'array-contains', userUid)
@@ -148,6 +148,20 @@ export const getUserCourses = async (userUid: string) => {
     uid: doc.id,
   }));
   return userCourses;
+};
+
+export const getUserCoursesQuery = (userUid: string, userRole: string) => {
+  if (userRole === 'teacher') {
+    return query(
+      getCoursesCollectionRef(),
+      where('teacher.uid', '==', userUid)
+    );
+  } else {
+    return query(
+      getCoursesCollectionRef(),
+      where('students', 'array-contains', userUid)
+    );
+  }
 };
 
 export const getTeachers = async () => {

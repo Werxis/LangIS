@@ -3,6 +3,7 @@ import {
   CourseWithId,
   LangIsUserWithId,
   getUserCourses,
+  getUserCoursesQuery,
 } from '../../firebase/firestore';
 import useTranslation from '../../hooks/useTranslation';
 import { FC, useEffect, useState } from 'react';
@@ -15,6 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
+import useFirestoreQueryOnSnapshot from '../../hooks/useFirestoreQueryOnSnapshot';
 
 interface MyCoursesPageProps {
   user: User;
@@ -23,17 +25,20 @@ interface MyCoursesPageProps {
 
 const MyCourses: FC<MyCoursesPageProps> = ({ user, userLangIs }) => {
   const t = useTranslation();
-  const [userCourses, setUserCourses] = useState<CourseWithId[]>([]);
+  // const [userCourses, setUserCourses] = useState<CourseWithId[]>([]);
+  const { data: userCourses } = useFirestoreQueryOnSnapshot(
+    getUserCoursesQuery(userLangIs.uid, userLangIs.role)
+  );
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getUserCourses(userLangIs.uid);
-      setUserCourses(data);
-    };
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const data = await getUserCourses(userLangIs.uid, userLangIs.role);
+  //     setUserCourses(data);
+  //   };
+  //   fetchData();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   return (
     <Container>

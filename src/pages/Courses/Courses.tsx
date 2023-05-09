@@ -64,10 +64,11 @@ const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
 
   const addCourseTest = async () => {
     const courseTeacher: CourseTeacher = {
-      uid: '1UDKVTO7h8TMpgkFgxcD',
-      firstName: 'test',
-      lastName: 'děda',
-      photoUrl: null,
+      uid: 'hZQhgSs2VEea7NiKy0jNaB4yNFh1',
+      firstName: 'Tomáš',
+      lastName: 'Učitel',
+      photoUrl:
+        'https://firebasestorage.googleapis.com/v0/b/langis-93ba3.appspot.com/o/images%2Fprofile_pictures%2FhZQhgSs2VEea7NiKy0jNaB4yNFh1__teacher%20test%20crop.jpg?alt=media&token=f30f8ee2-99fd-47d1-9d7a-f7b9abb357b1',
     };
     const testCourse: Course = {
       name: 'Kurz špatnělštiny test',
