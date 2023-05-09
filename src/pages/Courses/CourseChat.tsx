@@ -1,5 +1,5 @@
 import { User } from 'firebase/auth';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   LangIsUserWithId,
@@ -18,6 +18,7 @@ import {
   InputAdornment,
   Input,
   OutlinedInput,
+  Avatar,
 } from '@mui/material';
 import { useTranslation } from '../../hooks';
 import useFirestoreCollectionOnSnapshot from '../../hooks/useFirestoreCollectionOnSnapshot';
@@ -44,6 +45,7 @@ const MyCourseDetail: FC<MyCourseChatPageProps> = ({ user, userLangIs }) => {
 
   const handleSendMessage = async () => {
     if (messageContent.trim() === '') return;
+    setMessageContent('');
 
     const message: Message = {
       contents: messageContent,
@@ -53,34 +55,87 @@ const MyCourseDetail: FC<MyCourseChatPageProps> = ({ user, userLangIs }) => {
       userUid: userLangIs.uid,
     };
     await addMessage(message, courseUid as string);
-    setMessageContent('');
   };
 
   return (
     <Container>
-      <Box sx={{ height: '75vh' }}>
+      <Box sx={{ maxHeight: '75vh', overflow: 'auto' }}>
         <Typography sx={{ m: '0.5em' }} variant="h4" align="center">
           {course?.name}
         </Typography>
-        {messages &&
-          messages.map((message) => (
-            <Box
-              key={message.uid}
-              sx={{
-                color: message.userUid === userLangIs.uid ? 'red' : 'blue',
-              }}
-            >
-              <Typography>
-                {message.userName}: {message.contents}
-              </Typography>
-            </Box>
-          ))}
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          {messages &&
+            messages.map((message) => (
+              <Box
+                key={message.uid}
+                sx={{
+                  alignSelf:
+                    message.userUid === userLangIs.uid ? 'end' : 'start',
+                  display: 'grid',
+                  m: '0.2em 0',
+                  p: '0.5em 0.8em',
+                }}
+              >
+                <IconButton
+                  sx={{
+                    p: 0,
+                    marginRight: '0.3em',
+                    gridColumn: '1',
+                    gridRow: 'span 2',
+                    display:
+                      message.userUid === userLangIs.uid ? 'none' : 'block',
+                  }}
+                >
+                  <Avatar
+                    src={
+                      message.userPhotoUrl === undefined ||
+                      message.userPhotoUrl === null
+                        ? undefined
+                        : message.userPhotoUrl
+                    }
+                    alt="profile picture"
+                    sx={{ width: '3em', height: '3em' }}
+                  />
+                </IconButton>
+                <Box
+                  sx={{
+                    gridColumn: '2',
+                    gridRow: '1',
+                    backgroundColor:
+                      message.userUid === userLangIs.uid
+                        ? '#1877F2'
+                        : '#d5deeb',
+                    color:
+                      message.userUid === userLangIs.uid ? 'white' : 'black',
+                    borderRadius:
+                      message.userUid === userLangIs.uid
+                        ? '20px 1px 20px 20px'
+                        : '1px 20px 20px 20px',
+                    p: '0.5em 0.8em',
+                  }}
+                >
+                  <Typography>{message.userName}</Typography>
+                  <Typography>{message.contents}</Typography>
+                </Box>
+              </Box>
+            ))}
+        </Box>
       </Box>
-      <Box>
+      <Box
+      // sx={{
+      //   position: 'fixed',
+      //   left: 0,
+      //   width: '100vw',
+      //   p: 0,
+      //   m: 'auto 2em',
+      //   backgroundColor: 'red',
+      // }}
+      >
         <OutlinedInput
+          sx={{ backgroundColor: 'white' }}
           placeholder="Aa"
-          fullWidth
           value={messageContent}
+          fullWidth
           onChange={(e) => setMessageContent(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {

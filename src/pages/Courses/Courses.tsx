@@ -27,7 +27,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useFirestoreOnSnapshot, useMediaDevice } from '../../hooks';
-import { TextInput } from '../../components/forms';
+import { TextInput, SingleSelect } from '../../components/forms';
 import * as Yup from 'yup';
 import { Close, Delete, Edit } from '@mui/icons-material';
 import { Formik, Form } from 'formik';
