@@ -1,12 +1,11 @@
 import { User } from 'firebase/auth';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   LangIsUserWithId,
   Message,
   addMessage,
   getCourseDocumentRef,
-  getMessagesCollectionRef,
   getMessagesOrderedQuery,
 } from '../../firebase/firestore';
 import useFirestoreDocumentOnSnapshot from '../../hooks/useFirestoreDocumentOnSnapshot';
@@ -14,17 +13,13 @@ import {
   Box,
   Typography,
   Container,
-  TextField,
   IconButton,
   InputAdornment,
-  Input,
   OutlinedInput,
   Avatar,
 } from '@mui/material';
 import { useTranslation } from '../../hooks';
-import useFirestoreCollectionOnSnapshot from '../../hooks/useFirestoreCollectionOnSnapshot';
-import Button from '../../components/Button';
-import { Timestamp, serverTimestamp } from 'firebase/firestore';
+import { Timestamp } from 'firebase/firestore';
 import { Send } from '@mui/icons-material';
 import useFirestoreQueryOnSnapshot from '../../hooks/useFirestoreQueryOnSnapshot';
 
@@ -99,7 +94,7 @@ const MyCourseDetail: FC<MyCourseChatPageProps> = ({ user, userLangIs }) => {
                         ? undefined
                         : message.userPhotoUrl
                     }
-                    alt="profile picture"
+                    alt={t('profilePicture')}
                     sx={{ width: '3em', height: '3em' }}
                   />
                 </IconButton>

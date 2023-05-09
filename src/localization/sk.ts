@@ -21,4 +21,5 @@ export default {
   myCourses: 'My courses',
   noUserCourses: "You aren't enrolled in any courses.",
   groupChat: 'Group chat',
+  profilePicture: 'Profile picture',
 };

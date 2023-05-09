@@ -2,7 +2,6 @@ import { User } from 'firebase/auth';
 import {
   CourseWithId,
   LangIsUserWithId,
-  getTeachers,
   getUserCourses,
 } from '../../firebase/firestore';
 import useTranslation from '../../hooks/useTranslation';
@@ -15,7 +14,6 @@ import {
   Container,
   Typography,
 } from '@mui/material';
-import Courses from './Courses';
 import { Link, useNavigate } from 'react-router-dom';
 
 interface MyCoursesPageProps {

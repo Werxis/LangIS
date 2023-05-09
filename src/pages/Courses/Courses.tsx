@@ -8,11 +8,10 @@ import {
   addCourse,
   deleteCourse,
   getCoursesCollectionRef,
-  getTeachers,
   getTeachersQuery,
   updateCourse,
 } from '../../firebase/firestore';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import {
   Box,
   Button,
@@ -28,7 +27,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useFirestoreOnSnapshot, useMediaDevice } from '../../hooks';
-import { TextInput, SingleSelect } from '../../components/forms';
+import { TextInput } from '../../components/forms';
 import * as Yup from 'yup';
 import { Close, Delete, Edit } from '@mui/icons-material';
 import { Formik, Form } from 'formik';

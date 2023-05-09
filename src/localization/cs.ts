@@ -21,4 +21,5 @@ export default {
   myCourses: 'Moje kurzy',
   noUserCourses: 'Nejste zapsán v žádném kurzu',
   groupChat: 'Skupinový chat',
+  profilePicture: 'Profile picture',
 };
