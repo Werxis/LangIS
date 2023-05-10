@@ -14,6 +14,7 @@ import {
   TableRow,
   TableCell,
 } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import { retrieveProfilePhotoUrl } from '../utils';
 import { useDialog, useMediaDevice } from '../hooks';
 
@@ -29,11 +30,12 @@ interface ProfilePageProps {
 
 const Profile: FC<ProfilePageProps> = ({ user, userLangIs }) => {
   const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [isProfileImageHovered, setIsProfileImageHovered] =
+    useState<boolean>(false);
+
   const { isMobile } = useMediaDevice();
   const { setDialog } = useDialog();
   const navigate = useNavigate();
-
-  console.log('profileImage: ', profileImage);
 
   useEffect(() => {
     if (!profileImage) {
@@ -96,22 +98,53 @@ const Profile: FC<ProfilePageProps> = ({ user, userLangIs }) => {
           gap: '20px',
         }}
       >
-        <img
-          src={profilePhotoUrl}
-          alt="profile picture"
+        {/* Profile Image Container */}
+        <Box
           style={{
-            width: '192px',
+            position: 'relative',
             padding: '16px',
             border: '1px solid gray',
             borderRadius: '10px',
             cursor: 'pointer',
           }}
+          onMouseEnter={() => setIsProfileImageHovered(true)}
+          onMouseLeave={() => setIsProfileImageHovered(false)}
           onClick={() => {
             const element = document.querySelector('#prof_pic_uploader');
             const imgElement = element as HTMLImageElement;
             imgElement.click();
           }}
-        />
+        >
+          <img
+            src={profilePhotoUrl}
+            alt="profile picture"
+            style={{
+              width: '192px',
+              opacity: isProfileImageHovered ? 0.3 : 1.0,
+            }}
+          />
+
+          {isProfileImageHovered && (
+            <Box
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+              }}
+            >
+              <EditIcon
+                sx={{
+                  fontSize: '84px',
+                  backgroundColor: 'lightgray',
+                  padding: 1,
+                  borderRadius: '20%',
+                  border: '2px solid black',
+                }}
+              />
+            </Box>
+          )}
+        </Box>
 
         {/* Helper input, not even displayed, programatically clicked */}
         <input
@@ -126,10 +159,12 @@ const Profile: FC<ProfilePageProps> = ({ user, userLangIs }) => {
           }}
         />
 
+        {/* User name */}
         <Typography variant="h3" component="h1" textAlign="center">
           {user.displayName ?? userLangIs.firstName + ' ' + userLangIs.lastName}
         </Typography>
 
+        {/* User description */}
         <Typography
           variant="subtitle1"
           component="span"
@@ -149,6 +184,7 @@ const Profile: FC<ProfilePageProps> = ({ user, userLangIs }) => {
           </Typography>
         </Box>
 
+        {/* User table information + container */}
         <TableContainer
           component={Paper}
           sx={{
@@ -163,7 +199,9 @@ const Profile: FC<ProfilePageProps> = ({ user, userLangIs }) => {
               {rows.map((row) => (
                 <TableRow
                   key={row.rowName}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  sx={{
+                    '&:last-child td, &:last-child th': { border: 0 },
+                  }}
                 >
                   <TableCell
                     align="left"
