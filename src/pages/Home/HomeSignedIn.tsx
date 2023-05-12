@@ -1,12 +1,21 @@
-import { logout } from '../../firebase/auth';
+import { Container, Box, Typography } from '@mui/material';
+import { useMediaDevice } from '../../hooks';
 
 const HomeSignedIn = () => {
-  //console.log('Home Signed In!');
+  const { isMobile } = useMediaDevice();
+
   return (
-    <div>
-      <div>Home Signed In!</div>
-      <button onClick={() => logout()}>Log out!</button>
-    </div>
+    <Container>
+      <Box marginTop={isMobile ? 4 : 16} textAlign="center">
+        <Typography variant="h3">
+          Vitajte na domovskej stránke aplikácie LangIS!
+        </Typography>
+        <Typography variant="h6" marginTop={2}>
+          Z ponuky vyššie si vyberte aktuálnu ponuku kurzov alebo si
+          prehliadnite vaše aktuálne zaregistrované kurzy.
+        </Typography>
+      </Box>
+    </Container>
   );
 };
 

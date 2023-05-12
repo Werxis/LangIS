@@ -112,11 +112,11 @@ const LoginForm = () => {
           }}
           onSubmit={async (values) => {
             try {
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               const userCredential: UserCredential = await loginEmailPassword(
                 values.email,
                 values.password
               );
-              console.log('userCredential: ', userCredential);
             } catch (error) {
               console.error(error);
               if (error instanceof FirebaseError) {
@@ -361,12 +361,11 @@ const RegisterForm = () => {
             confirmPassword: '',
           }}
           onSubmit={async (values) => {
-            console.log('values: ', values);
             try {
               // 1.) Register the user into authentization service
               const userCredential: UserCredential =
                 await registerEmailPassword(values.email, values.password);
-              console.log('userCredential: ', userCredential);
+
               const uid = userCredential.user.uid;
 
               // 2.) Register user into Firestore database with additional user fields
@@ -384,7 +383,6 @@ const RegisterForm = () => {
                 dialogTitle: 'Úspešná registrácia',
                 dialogData: 'Registrácia prebehla úspešne!',
               });
-              console.log('DONE!');
             } catch (error) {
               console.error(error);
               if (error instanceof FirebaseError) {

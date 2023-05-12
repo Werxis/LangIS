@@ -16,7 +16,7 @@ import { blue } from '@mui/material/colors';
 import LanguageSelect from './LanguageSelect';
 import Button from './Button';
 
-import { useMediaDevice, useTranslation } from '../hooks';
+import { useDialog, useMediaDevice, useTranslation } from '../hooks';
 import { useIsLoginFormActive } from '../recoil/atoms';
 import { useNavigate } from 'react-router-dom';
 
@@ -71,11 +71,6 @@ const NavBarSignIn: FC<NavBarSignInProps> = ({ user, userLangIs }) => {
       isDesktopOption: false,
     },
     {
-      label: 'Button 3',
-      onClick: () => console.log('Button 3'),
-      isDesktopOption: false,
-    },
-    {
       label: 'Logout',
       onClick: () => logout(),
       isDesktopOption: true,
@@ -102,13 +97,15 @@ const NavBarSignIn: FC<NavBarSignInProps> = ({ user, userLangIs }) => {
           gap: '25px',
         }}
       >
-        <Typography
-          variant={isMobile ? 'h4' : 'h3'}
-          component="h1"
-          sx={{ color: 'white', cursor: 'pointer' }}
-        >
-          LangIS
-        </Typography>
+        <Box onClick={() => navigate('/')}>
+          <Typography
+            variant={isMobile ? 'h4' : 'h3'}
+            component="h1"
+            sx={{ color: 'white', cursor: 'pointer' }}
+          >
+            LangIS
+          </Typography>
+        </Box>
 
         {deviceType === 'desktop' && (
           <>
@@ -116,7 +113,6 @@ const NavBarSignIn: FC<NavBarSignInProps> = ({ user, userLangIs }) => {
               {t('myCourses')}
             </Button>
             <Button onClick={() => navigate('/courses')}>{t('courses')}</Button>
-            <Button>Button 3</Button>
           </>
         )}
       </Box>
@@ -212,6 +208,8 @@ const NavBarSignOut = () => {
   const [anchorElNav, setAnchorElNav] = useState<HTMLElement | null>(null);
   const { isMobile } = useMediaDevice();
   const t = useTranslation();
+  const navigate = useNavigate();
+  const { setDialog } = useDialog();
 
   const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -221,18 +219,29 @@ const NavBarSignOut = () => {
     setAnchorElNav(null);
   };
 
+  const handleOpenAboutDialog = () => {
+    setDialog({
+      dialogTitle: 'About',
+      dialogData: <AboutDialogData />,
+      dialogOptions: { size: 'medium' },
+    });
+  };
+
   return (
     <Box
       component="nav"
       sx={{
-        height: '8vh', // HERE
+        height: '8vh',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         backgroundColor: blue[900],
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
+      <Box
+        sx={{ display: 'flex', alignItems: 'center', gap: '25px' }}
+        onClick={() => navigate('/')}
+      >
         <Typography
           variant={isMobile ? 'h4' : 'h3'}
           component="h1"
@@ -241,7 +250,9 @@ const NavBarSignOut = () => {
           LangIS
         </Typography>
 
-        {!isMobile && <Button>{t('about')}</Button>}
+        {!isMobile && (
+          <Button onClick={handleOpenAboutDialog}>{t('about')}</Button>
+        )}
       </Box>
 
       {!isMobile && (
@@ -298,13 +309,54 @@ const NavBarSignOut = () => {
                   {isLoginFormActive ? t('registration') : t('login')}
                 </Typography>
               </MenuItem>
-              <MenuItem onClick={handleCloseNavMenu}>
+              <MenuItem
+                onClick={() => {
+                  handleOpenAboutDialog();
+                  handleCloseNavMenu();
+                }}
+              >
                 <Typography>{t('about')}</Typography>
               </MenuItem>
             </Menu>
           </Box>
         </Box>
       )}
+    </Box>
+  );
+};
+
+// - - - -
+
+const AboutDialogData = () => {
+  return (
+    <Box sx={{ fontStyle: 'italic' }}>
+      <Typography>
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit. In dapibus
+        augue non sapien. Mauris tincidunt sem sed arcu. Aliquam id dolor. Morbi
+        imperdiet, mauris ac auctor dictum, nisl ligula egestas nulla, et
+        sollicitudin sem purus in lacus. Fusce tellus. Nullam sit amet magna in
+        magna gravida vehicula.
+      </Typography>
+
+      <Typography marginTop={4}>
+        Integer vulputate sem a nibh rutrum consequat. Integer in sapien.
+        Curabitur sagittis hendrerit ante. Praesent dapibus. Duis bibendum,
+        lectus ut viverra rhoncus, dolor nunc faucibus libero, eget facilisis
+        enim ipsum id lacus. Donec quis nibh at felis congue commodo. Nunc
+        dapibus tortor vel mi dapibus sollicitudin. Aenean id metus id velit
+        ullamcorper pulvinar. Nullam sapien sem, ornare ac, nonummy non,
+        lobortis a enim. Mauris tincidunt sem sed arcu. Mauris elementum mauris
+        vitae tortor. Cum sociis natoque penatibus et magnis dis parturient
+        montes, nascetur ridiculus mus. Nullam at arcu a est sollicitudin
+        euismod.
+      </Typography>
+
+      <Typography marginTop={4}>
+        In laoreet, magna id viverra tincidunt, sem odio bibendum justo, vel
+        imperdiet sapien wisi sed libero. Integer tempor. Suspendisse nisl.
+        Mauris suscipit, ligula sit amet pharetra semper, nibh ante cursus
+        purus, vel sagittis velit mauris vel metus.
+      </Typography>
     </Box>
   );
 };
