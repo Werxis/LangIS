@@ -35,7 +35,6 @@ function App() {
           <Routes>
             <Route path="/" element={<Home user={user} />} />
             <Route path="/test" element={<Test />} />
-            <Route path="*" element={<NotFound />} />
             {/* Authenticated routes */}
             <Route
               path="/secret"
@@ -95,6 +94,7 @@ function App() {
                 </AuthWrapper>
               }
             />
+            {/* <Route path="*" element={<NotFound />} /> */}
           </Routes>
 
           <Footer />
