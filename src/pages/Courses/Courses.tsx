@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 
 import {
   useDialog,
@@ -14,7 +15,6 @@ import {
   Box,
   Button,
   Card,
-  CardActions,
   CardContent,
   Container,
   Grid,
@@ -28,6 +28,7 @@ import {
 import { Close, Delete, Edit } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
+import InfoIcon from '@mui/icons-material/Info';
 
 import { TextInput } from '../../components/forms';
 
@@ -57,6 +58,7 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
   const [isAddCourseFormActive, setIsAddCourseFormActive] = useState(false);
   const { deviceType } = useMediaDevice();
   const { setDialog } = useDialog();
+  const navigate = useNavigate();
 
   const enrollUserInCourse = async (course: CourseWithId) => {
     const isCapacityExceeded = course.students.length >= course.capacity;
@@ -228,13 +230,25 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
                   </Box>
                 </CardContent>
 
-                <CardActions
+                <Box
                   sx={{
-                    marginBottom: 1,
+                    marginBottom: 2,
                     display: 'flex',
+                    flexDirection: 'column',
                     justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: 1,
                   }}
                 >
+                  <Button
+                    variant="outlined"
+                    color="info"
+                    startIcon={<InfoIcon />}
+                    sx={{ width: '80%' }}
+                    onClick={() => navigate(`/courses/${course.uid}`)}
+                  >
+                    More Info
+                  </Button>
                   {userLangIs.role === 'student' &&
                     (course.students.includes(userLangIs.uid) ? (
                       <Button
@@ -281,7 +295,7 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
                       </IconButton>
                     </>
                   )}
-                </CardActions>
+                </Box>
               </Card>
             </Grid>
           ))}

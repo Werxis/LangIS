@@ -65,17 +65,7 @@ function App() {
               }
             />
             <Route
-              path="/my-courses"
-              element={
-                <AuthWrapper user={user} userLangIs={userLangIs}>
-                  {(user, userLangIs) => (
-                    <MyCourses user={user} userLangIs={userLangIs} />
-                  )}
-                </AuthWrapper>
-              }
-            />
-            <Route
-              path="/my-courses/:courseUid"
+              path="/courses/:courseUid"
               element={
                 <AuthWrapper user={user} userLangIs={userLangIs}>
                   {(user, userLangIs) => (
@@ -85,11 +75,21 @@ function App() {
               }
             />
             <Route
-              path="/my-courses/:courseUid/chat"
+              path="/courses/:courseUid/chat"
               element={
                 <AuthWrapper user={user} userLangIs={userLangIs}>
                   {(user, userLangIs) => (
                     <CourseChat user={user} userLangIs={userLangIs} />
+                  )}
+                </AuthWrapper>
+              }
+            />
+            <Route
+              path="/my-courses"
+              element={
+                <AuthWrapper user={user} userLangIs={userLangIs}>
+                  {(user, userLangIs) => (
+                    <MyCourses user={user} userLangIs={userLangIs} />
                   )}
                 </AuthWrapper>
               }

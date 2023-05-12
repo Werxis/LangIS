@@ -61,13 +61,13 @@ const NavBarSignIn: FC<NavBarSignInProps> = ({ user, userLangIs }) => {
       isDesktopOption: true,
     },
     {
-      label: t('myCourses'),
-      onClick: () => navigate('my-courses'),
+      label: t('courses'),
+      onClick: () => navigate('/courses'),
       isDesktopOption: false,
     },
     {
-      label: t('courses'),
-      onClick: () => navigate('/courses'),
+      label: t('myCourses'),
+      onClick: () => navigate('my-courses'),
       isDesktopOption: false,
     },
     {
@@ -109,10 +109,10 @@ const NavBarSignIn: FC<NavBarSignInProps> = ({ user, userLangIs }) => {
 
         {deviceType === 'desktop' && (
           <>
+            <Button onClick={() => navigate('/courses')}>{t('courses')}</Button>
             <Button onClick={() => navigate('/my-courses')}>
               {t('myCourses')}
             </Button>
-            <Button onClick={() => navigate('/courses')}>{t('courses')}</Button>
           </>
         )}
       </Box>

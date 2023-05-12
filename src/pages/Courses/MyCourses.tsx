@@ -114,14 +114,14 @@ const MyCourses: FC<MyCoursesPageProps> = ({ userLangIs }) => {
                 <Button
                   variant="outlined"
                   startIcon={<ChatIcon />}
-                  onClick={() => navigate(`/my-courses/${course.uid}/chat`)}
+                  onClick={() => navigate(`/courses/${course.uid}/chat`)}
                 >
                   Course Group chat
                 </Button>
                 <Button
                   variant="outlined"
                   startIcon={<InfoIcon />}
-                  onClick={() => navigate(`/my-courses/${course.uid}`)}
+                  onClick={() => navigate(`/courses/${course.uid}`)}
                 >
                   See more course details
                 </Button>
