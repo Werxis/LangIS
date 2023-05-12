@@ -2,24 +2,26 @@ import { User } from 'firebase/auth';
 import { FC, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
+  Course,
   LangIsUserWithId,
   getCourseDocumentRef,
 } from '../../firebase/firestore';
 import useFirestoreDocumentOnSnapshot from '../../hooks/useFirestoreDocumentOnSnapshot';
 import { Box, Typography, Container, Button } from '@mui/material';
-import { useTranslation } from '../../hooks';
+import { useDocumentTitle, useTranslation } from '../../hooks';
 
 interface MyCoursesDetailPageProps {
   user: User;
   userLangIs: LangIsUserWithId;
 }
 
-const MyCourseDetail: FC<MyCoursesDetailPageProps> = ({ user, userLangIs }) => {
+const CourseDetail: FC<MyCoursesDetailPageProps> = () => {
   const t = useTranslation();
   const navigate = useNavigate();
   const { courseUid } = useParams();
   const [courseRef] = useState(getCourseDocumentRef(courseUid as string));
-  const { data: course } = useFirestoreDocumentOnSnapshot(courseRef);
+  const { data: course } = useFirestoreDocumentOnSnapshot<Course>(courseRef);
+  useDocumentTitle(`LangIS - Course Detail`);
 
   return (
     <Container
@@ -57,4 +59,4 @@ const MyCourseDetail: FC<MyCoursesDetailPageProps> = ({ user, userLangIs }) => {
   );
 };
 
-export default MyCourseDetail;
+export default CourseDetail;

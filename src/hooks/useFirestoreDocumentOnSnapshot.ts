@@ -4,8 +4,7 @@ import { onSnapshot, DocumentReference } from 'firebase/firestore';
 const useFirestoreDocumentOnSnapshot = <T>(
   documentRef: DocumentReference<T>
 ) => {
-  type TWithId = T & { uid: string };
-  const [data, setData] = useState<TWithId>();
+  const [data, setData] = useState<T & { uid: string }>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {

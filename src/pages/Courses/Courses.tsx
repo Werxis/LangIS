@@ -9,6 +9,7 @@ import {
   useMediaDevice,
   useTranslation,
   useFirestoreQueryOnSnapshot,
+  useDocumentTitle,
 } from '../../hooks';
 
 import {
@@ -59,6 +60,7 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
   const { deviceType } = useMediaDevice();
   const { setDialog } = useDialog();
   const navigate = useNavigate();
+  useDocumentTitle('LangIS - Courses');
 
   const enrollUserInCourse = async (course: CourseWithId) => {
     const isCapacityExceeded = course.students.length >= course.capacity;

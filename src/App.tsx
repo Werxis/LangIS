@@ -12,17 +12,18 @@ import Secret from './pages/Secret';
 import LoaderWholePage from './components/LoaderWholePage';
 import NavBar from './components/NavBar';
 
-import { useAuthUser, useLoader } from './hooks';
+import { useAuthUser, useDocumentTitle, useLoader } from './hooks';
 import Footer from './components/Footer';
 import Courses from './pages/Courses/Courses';
 import MyCourses from './pages/Courses/MyCourses';
-import MyCourseDetail from './pages/Courses/MyCourseDetail';
+import MyCourseDetail from './pages/Courses/CourseDetail';
 import CourseChat from './pages/Courses/CourseChat';
 
 function App() {
   /* Undefined -> not loaded yet, Null -> logged out, User -> logged in */
   const { user, userLangIs } = useAuthUser();
   const [isLoaderWholePage] = useLoader();
+  useDocumentTitle('LangIS');
 
   return (
     <BrowserRouter>

@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { retrieveProfilePhotoUrl } from '../utils';
-import { useDialog, useMediaDevice } from '../hooks';
+import { useDialog, useDocumentTitle, useMediaDevice } from '../hooks';
 
 import { uploadProfilePicture } from '../firebase/storage';
 import { updateUser } from '../firebase/firestore';
@@ -36,6 +36,7 @@ const Profile: FC<ProfilePageProps> = ({ user, userLangIs }) => {
   const { isMobile } = useMediaDevice();
   const { setDialog } = useDialog();
   const navigate = useNavigate();
+  useDocumentTitle('LangIS - Profile');
 
   useEffect(() => {
     if (!profileImage) {

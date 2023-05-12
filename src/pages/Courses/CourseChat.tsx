@@ -2,6 +2,7 @@ import { User } from 'firebase/auth';
 import { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
+  Course,
   LangIsUserWithId,
   Message,
   addMessage,
@@ -18,7 +19,7 @@ import {
   OutlinedInput,
   Avatar,
 } from '@mui/material';
-import { useTranslation } from '../../hooks';
+import { useDocumentTitle, useTranslation } from '../../hooks';
 import { Timestamp } from 'firebase/firestore';
 import { Send } from '@mui/icons-material';
 import useFirestoreQueryOnSnapshot from '../../hooks/useFirestoreQueryOnSnapshot';
@@ -28,11 +29,12 @@ interface MyCourseChatPageProps {
   userLangIs: LangIsUserWithId;
 }
 
-const MyCourseDetail: FC<MyCourseChatPageProps> = ({ user, userLangIs }) => {
+const MyCourseDetail: FC<MyCourseChatPageProps> = ({ userLangIs }) => {
   const t = useTranslation();
   const { courseUid } = useParams();
   const [courseRef] = useState(getCourseDocumentRef(courseUid as string));
-  const { data: course } = useFirestoreDocumentOnSnapshot(courseRef);
+  const { data: course } = useFirestoreDocumentOnSnapshot<Course>(courseRef);
+  useDocumentTitle(`LangIS - Course chat`);
 
   //   const [messagesRef] = useState(getMessagesCollectionRef(courseUid as string));
   //   const { data: messages } = useFirestoreCollectionOnSnapshot(messagesRef);
