@@ -9,8 +9,7 @@ import { onSnapshot, CollectionReference } from 'firebase/firestore';
 const useFirestoreCollectionOnSnapshot = <T>(
   collectionRef: CollectionReference<T>
 ) => {
-  type TWithId = T & { uid: string };
-  const [data, setData] = useState<TWithId[]>([]);
+  const [data, setData] = useState<(T & { uid: string })[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {

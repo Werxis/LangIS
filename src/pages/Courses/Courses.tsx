@@ -51,7 +51,9 @@ interface CoursesPageProps {
 
 const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
   const t = useTranslation();
-  const { data: courses } = useFirestoreOnSnapshot(getCoursesCollectionRef());
+  const { data: courses, isLoading } = useFirestoreOnSnapshot<Course>(
+    getCoursesCollectionRef()
+  );
   const [isAddCourseFormActive, setIsAddCourseFormActive] = useState(false);
   const { deviceType } = useMediaDevice();
   const { setDialog } = useDialog();
@@ -95,6 +97,10 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
     };
     await addCourse(testCourse);
   };
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <Container
@@ -156,7 +162,7 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
       )}
 
       {/* Courses */}
-      {courses && (
+      {courses.length !== 0 && (
         <Grid container spacing={4}>
           {courses.map((course) => (
             <Grid item xs={12} md={6} key={course.uid}>
@@ -282,7 +288,9 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
         </Grid>
       )}
 
-      {!courses && <Typography>{t('noCoursesAvailable')}</Typography>}
+      {courses.length === 0 && (
+        <Typography>{t('noCoursesAvailable')}</Typography>
+      )}
     </Container>
   );
 };

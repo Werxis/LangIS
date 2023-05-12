@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { onSnapshot, Query } from 'firebase/firestore';
 
 const useFirestoreQueryOnSnapshot = <T>(query: Query<T>) => {
-  type TWithId = T & { uid: string };
-  const [data, setData] = useState<TWithId[]>([]);
+  const [data, setData] = useState<(T & { uid: string })[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {

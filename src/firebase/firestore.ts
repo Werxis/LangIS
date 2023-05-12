@@ -96,6 +96,7 @@ export const deleteUser = async (uid: string) => {
 };
 
 // - - - - -
+
 export type Course = {
   name: string;
   description: string;
@@ -190,7 +191,9 @@ export const deleteCourse = async (courseUid: string) => {
   const courseDocRef = getCourseDocumentRef(courseUid);
   await deleteDoc(courseDocRef);
 };
+
 // - - - - -
+
 export type Message = {
   contents: string;
   timestamp: Timestamp;
