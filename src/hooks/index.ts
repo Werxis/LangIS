@@ -4,6 +4,8 @@ import useDialog from './useDialog';
 import useDocumentTitle from './useDocumentTitle';
 import useElementSize from './useElementSize';
 import useFirestoreCollectionOnSnapshot from './useFirestoreCollectionOnSnapshot';
+import useFirestoreDocumentOnSnapshot from './useFirestoreDocumentOnSnapshot';
+import useFirestoreQueryOnSnapshot from './useFirestoreQueryOnSnapshot';
 import useLanguage from './useLanguage';
 import useLoader from './useLoader';
 import useLocalStorage from './useLocalStorage';
@@ -17,6 +19,8 @@ export {
   useDocumentTitle,
   useElementSize,
   useFirestoreCollectionOnSnapshot as useFirestoreOnSnapshot,
+  useFirestoreDocumentOnSnapshot,
+  useFirestoreQueryOnSnapshot,
   useLanguage,
   useLoader,
   useLocalStorage,

@@ -1,5 +1,37 @@
+import { FC, useState } from 'react';
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
+
+import {
+  useDialog,
+  useFirestoreOnSnapshot,
+  useMediaDevice,
+  useTranslation,
+  useFirestoreQueryOnSnapshot,
+} from '../../hooks';
+
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Container,
+  Grid,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Typography,
+} from '@mui/material';
+import { Close, Delete, Edit } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import CancelIcon from '@mui/icons-material/Cancel';
+
+import { TextInput } from '../../components/forms';
+
 import { User } from 'firebase/auth';
-import useTranslation from '../../hooks/useTranslation';
 import {
   Course,
   CourseTeacher,
@@ -11,38 +43,18 @@ import {
   getTeachersQuery,
   updateCourse,
 } from '../../firebase/firestore';
-import { FC, useState } from 'react';
-import {
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Container,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Typography,
-} from '@mui/material';
-import { useFirestoreOnSnapshot, useMediaDevice } from '../../hooks';
-import { TextInput } from '../../components/forms';
-import * as Yup from 'yup';
-import { Close, Delete, Edit } from '@mui/icons-material';
-import { Formik, Form } from 'formik';
-import useFirestoreQueryOnSnapshot from '../../hooks/useFirestoreQueryOnSnapshot';
 
 interface CoursesPageProps {
   user: User;
   userLangIs: LangIsUserWithId;
 }
 
-const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
+const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
   const t = useTranslation();
   const { data: courses } = useFirestoreOnSnapshot(getCoursesCollectionRef());
   const [isAddCourseFormActive, setIsAddCourseFormActive] = useState(false);
   const { deviceType } = useMediaDevice();
+  const { setDialog } = useDialog();
 
   const enrollUserInCourse = async (course: CourseWithId) => {
     const isCapacityExceeded = course.students.length >= course.capacity;
@@ -85,10 +97,20 @@ const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
   };
 
   return (
-    <Container>
-      <Typography sx={{ m: '0.5em' }} variant="h4" align="center">
+    <Container
+      sx={{ marginBottom: deviceType === 'mobile' ? '75px' : '100px' }}
+    >
+      {/* Title */}
+      <Typography
+        sx={{ m: '0.5em' }}
+        variant="h3"
+        component="h2"
+        align="center"
+      >
         {t('courses')}
       </Typography>
+
+      {/* Admin stuff */}
       {/* TODO delete test button */}
       {userLangIs.role === 'admin' && (
         <Button onClick={addCourseTest}>Add course (TEST)</Button>
@@ -132,78 +154,135 @@ const Courses: FC<CoursesPageProps> = ({ user, userLangIs }) => {
           <AddCourseForm />
         </Box>
       )}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-evenly',
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-        }}
-      >
-        {courses &&
-          courses.map((course) => (
-            <Card
-              key={course.uid}
-              sx={{
-                width:
-                  deviceType === 'mobile'
-                    ? '100%'
-                    : deviceType === 'tablet'
-                    ? '40%'
-                    : '30%',
-                m: '1em',
-              }}
-            >
-              <CardContent>
-                <Typography>{course.name}</Typography>
-                <Typography>{course.description}</Typography>
-                <Typography>{course.language}</Typography>
-                <Typography>
-                  {t('languageLevel')}: {course.level}
-                </Typography>
-                <Typography>
-                  {t('teacher')}: {course.teacher.firstName}{' '}
-                  {course.teacher.lastName}
-                </Typography>
-                <Typography>
-                  {t('capacity')}: {course.students.length}/{course.capacity}
-                </Typography>
-                <Typography>
-                  {t('price')}: {course.price} CZK
-                </Typography>
-              </CardContent>
-              <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
-                {userLangIs.role === 'student' &&
-                  (course.students.includes(userLangIs.uid) ? (
-                    <Button onClick={() => cancelUserEnrollment(course)}>
-                      {t('cancelEnrollment')}
-                    </Button>
-                  ) : course.students.length < course.capacity ? (
-                    <Button onClick={() => enrollUserInCourse(course)}>
-                      {t('enrollInCourse')}
-                    </Button>
-                  ) : (
-                    <Typography>{t('courseFull')}</Typography>
-                  ))}
-                {userLangIs.role === 'admin' && (
-                  <>
-                    <IconButton>
-                      <Edit />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => {
-                        deleteCourse(course.uid);
-                      }}
-                    >
-                      <Delete />
-                    </IconButton>
-                  </>
-                )}
-              </CardActions>
-            </Card>
+
+      {/* Courses */}
+      {courses && (
+        <Grid container spacing={4}>
+          {courses.map((course) => (
+            <Grid item xs={12} md={6} key={course.uid}>
+              <Card
+                key={course.uid}
+                elevation={12}
+                sx={{
+                  maxWidth: '560px',
+                  m: 'auto',
+                  maxHeight: '560px',
+                  overflow: 'auto',
+                }}
+              >
+                <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    textAlign={'center'}
+                    sx={{ textDecoration: 'underline', fontWeight: 'bold' }}
+                  >
+                    {course.name}
+                  </Typography>
+                  <Typography marginTop={2} sx={{ fontStyle: 'italic' }}>
+                    {course.description}
+                  </Typography>
+                  <Typography>{course.language}</Typography>
+
+                  <Box
+                    marginTop={3}
+                    sx={{ display: 'flex', flexDirection: 'column' }}
+                  >
+                    <Box sx={{ display: 'flex', gap: '5px' }}>
+                      <Typography fontWeight={'bold'}>
+                        {t('languageLevel')}:
+                      </Typography>
+                      <Typography>{course.level}</Typography>
+                    </Box>
+
+                    <Box sx={{ display: 'flex', gap: '5px' }}>
+                      <Typography fontWeight={'bold'}>
+                        {t('teacher')}:
+                      </Typography>
+                      <Typography>
+                        {course.teacher.firstName +
+                          ' ' +
+                          course.teacher.lastName}
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ display: 'flex', gap: '5px' }}>
+                      <Typography fontWeight={'bold'}>
+                        {t('capacity')}:
+                      </Typography>
+                      <Typography>
+                        {course.students.length}/{course.capacity}
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ display: 'flex', gap: '5px' }}>
+                      <Typography fontWeight={'bold'}>{t('price')}:</Typography>
+                      <Typography>{course.price} CZK</Typography>
+                    </Box>
+                  </Box>
+                </CardContent>
+
+                <CardActions
+                  sx={{
+                    marginBottom: 1,
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {userLangIs.role === 'student' &&
+                    (course.students.includes(userLangIs.uid) ? (
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        startIcon={<CancelIcon />}
+                        onClick={() =>
+                          setDialog({
+                            dialogTitle: 'Zrušenie zápisu',
+                            dialogData:
+                              'Ste si naprosto istý, že sa chcete odpísať z nasledujúceho kurzu?',
+                            submitLabel: 'Cancel Enrollment',
+                            onSubmit: () => cancelUserEnrollment(course),
+                          })
+                        }
+                        sx={{ width: '80%' }}
+                      >
+                        {t('cancelEnrollment')}
+                      </Button>
+                    ) : course.students.length < course.capacity ? (
+                      <Button
+                        variant="outlined"
+                        color="success"
+                        startIcon={<AddIcon />}
+                        onClick={() => enrollUserInCourse(course)}
+                        sx={{ width: '80%' }}
+                      >
+                        {t('enrollInCourse')}
+                      </Button>
+                    ) : (
+                      <Typography>{t('courseFull')}</Typography>
+                    ))}
+                  {userLangIs.role === 'admin' && (
+                    <>
+                      <IconButton>
+                        <Edit />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => {
+                          deleteCourse(course.uid);
+                        }}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </>
+                  )}
+                </CardActions>
+              </Card>
+            </Grid>
           ))}
-        {!courses && <Typography>{t('noCoursesAvailable')}</Typography>}
-      </Box>
+        </Grid>
+      )}
+
+      {!courses && <Typography>{t('noCoursesAvailable')}</Typography>}
     </Container>
   );
 };
@@ -215,9 +294,7 @@ const AddCourseForm = () => {
   const [selectedTeacher, setSelectedTeacher] = useState('');
   const { data: teachers } = useFirestoreQueryOnSnapshot(getTeachersQuery());
 
-  const [submissionErrorMessage, setSubmissionErrorMessage] = useState<
-    string | null
-  >(null);
+  const [submissionErrorMessage] = useState<string | null>(null);
 
   const selectTeacher = (e: SelectChangeEvent) => {
     setSelectedTeacher(e.target.value);
@@ -262,109 +339,107 @@ const AddCourseForm = () => {
             teacher: Yup.string().required('Teacher is required!'),
           })}
         >
-          {(formik) => (
-            <Form>
+          <Form>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '15px',
+              }}
+            >
+              <TextInput
+                name="name"
+                type="text"
+                label={t('courseName')}
+                size="small"
+                fullWidth
+                required
+              />
+
+              <TextInput
+                name="description"
+                type="text"
+                label={t('courseDescription')}
+                size="small"
+                fullWidth
+                required
+              />
+
+              <TextInput
+                name="language"
+                type="text"
+                label={t('courseLanguage')}
+                size="small"
+                fullWidth
+                required
+              />
+
+              <TextInput
+                name="level"
+                type="text"
+                label={t('languageLevel')}
+                size="small"
+                fullWidth
+                required
+              />
+
+              <TextInput
+                name="capacity"
+                type="number"
+                label={t('capacity')}
+                size="small"
+                fullWidth
+                required
+              />
+
+              <TextInput
+                name="price"
+                type="number"
+                label={t('price')}
+                size="small"
+                fullWidth
+                required
+              />
+
+              {/* TODO change to single select */}
+              <InputLabel id="teacher-label">{t('teacher')}</InputLabel>
+              <Select
+                name="teacher"
+                label={t('teacher')}
+                labelId="teacher-label"
+                value={selectedTeacher}
+                onChange={selectTeacher}
+              >
+                {teachers &&
+                  teachers.length > 0 &&
+                  teachers.map((teacher) => (
+                    <MenuItem key={teacher.uid} value={teacher.uid}>
+                      {teacher.firstName} {teacher.lastName}
+                    </MenuItem>
+                  ))}
+              </Select>
+
               <Box
                 sx={{
                   display: 'flex',
                   flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   gap: '15px',
+                  width: '100%',
                 }}
               >
-                <TextInput
-                  name="name"
-                  type="text"
-                  label={t('courseName')}
-                  size="small"
-                  fullWidth
-                  required
-                />
-
-                <TextInput
-                  name="description"
-                  type="text"
-                  label={t('courseDescription')}
-                  size="small"
-                  fullWidth
-                  required
-                />
-
-                <TextInput
-                  name="language"
-                  type="text"
-                  label={t('courseLanguage')}
-                  size="small"
-                  fullWidth
-                  required
-                />
-
-                <TextInput
-                  name="level"
-                  type="text"
-                  label={t('languageLevel')}
-                  size="small"
-                  fullWidth
-                  required
-                />
-
-                <TextInput
-                  name="capacity"
-                  type="number"
-                  label={t('capacity')}
-                  size="small"
-                  fullWidth
-                  required
-                />
-
-                <TextInput
-                  name="price"
-                  type="number"
-                  label={t('price')}
-                  size="small"
-                  fullWidth
-                  required
-                />
-
-                {/* TODO change to single select */}
-                <InputLabel id="teacher-label">{t('teacher')}</InputLabel>
-                <Select
-                  name="teacher"
-                  label={t('teacher')}
-                  labelId="teacher-label"
-                  value={selectedTeacher}
-                  onChange={selectTeacher}
-                >
-                  {teachers &&
-                    teachers.length > 0 &&
-                    teachers.map((teacher) => (
-                      <MenuItem key={teacher.uid} value={teacher.uid}>
-                        {teacher.firstName} {teacher.lastName}
-                      </MenuItem>
-                    ))}
-                </Select>
-
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    gap: '15px',
-                    width: '100%',
-                  }}
-                >
-                  <Button type="submit">{t('addNewCourse')}</Button>
-                  <Box>
-                    {submissionErrorMessage !== null && (
-                      <Typography color={'error'}>
-                        {submissionErrorMessage}
-                      </Typography>
-                    )}
-                  </Box>
+                <Button type="submit">{t('addNewCourse')}</Button>
+                <Box>
+                  {submissionErrorMessage !== null && (
+                    <Typography color={'error'}>
+                      {submissionErrorMessage}
+                    </Typography>
+                  )}
                 </Box>
               </Box>
-            </Form>
-          )}
+            </Box>
+          </Form>
         </Formik>
       </Box>
     </>
