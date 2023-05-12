@@ -94,7 +94,7 @@ function App() {
                 </AuthWrapper>
               }
             />
-            {/* <Route path="*" element={<NotFound />} /> */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
 
           <Footer />

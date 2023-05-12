@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['language-planet.svg', 'langis_preview.png'],
+      includeAssets: ['language-planet.svg', 'preview.png'],
       manifest: {
         name: 'LangIS',
         short_name: 'LangIS',
@@ -21,12 +21,12 @@ export default defineConfig({
             sizes: '48x48 192x192 512x512',
           },
           {
-            src: '/langis_preview.png',
+            src: '/preview.png',
             type: 'image/png',
             sizes: '1024x683',
           },
           {
-            src: '/langis_preview.png',
+            src: '/preview.png',
             type: 'image/png',
             sizes: '1024x683',
             purpose: 'any maskable',
