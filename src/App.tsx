@@ -20,14 +20,21 @@ import MyCourseDetail from './pages/Courses/CourseDetail';
 import CourseChat from './pages/Courses/CourseChat';
 
 function App() {
-  /* Undefined -> not loaded yet, Null -> logged out, User -> logged in */
-  const { user, userLangIs } = useAuthUser();
+  /* user: undefined -> not loaded yet, null -> logget out, User -> logged in */
+  /* userLangIs: null - logget out sync, LangIsUser -> logged in, isLangIsUserError true -> error */
+  const { user, userLangIs, isLangIsUserError } = useAuthUser();
   const [isLoaderWholePage] = useLoader();
   useDocumentTitle('LangIS');
 
+  if (isLangIsUserError) {
+    return null;
+  }
+
   return (
     <BrowserRouter>
-      {user === undefined || (user && !userLangIs) || isLoaderWholePage ? (
+      {user === undefined ||
+      (user && userLangIs === null) ||
+      isLoaderWholePage ? (
         <LoaderWholePage />
       ) : (
         <>
