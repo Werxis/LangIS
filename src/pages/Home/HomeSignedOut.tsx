@@ -27,7 +27,7 @@ import TextInput from '../../components/forms/TextInput';
 import Button from '../../components/Button';
 
 // Hooks
-import { useMediaDevice, useDialog } from '../../hooks';
+import { useMediaDevice, useDialog, useTranslation } from '../../hooks';
 import { useIsLoginFormActive } from '../../recoil/atoms';
 import { Link } from 'react-router-dom';
 
@@ -43,7 +43,7 @@ const HomeSignedOut = () => {
       {/* Background image + Login */}
       <Box
         sx={{
-          height: '85vh', // HERE
+          height: '85vh',
           width: '100vw',
           display: 'flex',
           justifyContent: 'center',
@@ -95,13 +95,14 @@ const LoginForm = () => {
     string | null
   >(null);
 
+  const t = useTranslation();
   const { isMobile } = useMediaDevice();
   const [isLoginFormActive, setIsLoginFormActive] = useIsLoginFormActive();
 
   return (
     <>
       <Typography variant="h5" component="h2">
-        Prihlásenie
+        {t('login')}
       </Typography>
 
       <Box sx={{ marginTop: 2.5 }}>
@@ -122,13 +123,13 @@ const LoginForm = () => {
               if (error instanceof FirebaseError) {
                 setSubmissionErrorMessage(error.message);
               } else {
-                setSubmissionErrorMessage('Registration has failed!');
+                setSubmissionErrorMessage(t('registration_failure'));
               }
             }
           }}
           validationSchema={Yup.object({
-            email: Yup.string().email().required('Email field is required'),
-            password: Yup.string().required('Password field is required!'),
+            email: Yup.string().email().required(t('email_field_required')),
+            password: Yup.string().required(t('password_field_required')),
           })}
         >
           <Form>
@@ -142,8 +143,8 @@ const LoginForm = () => {
               <TextInput
                 name="email"
                 type="email"
-                label="Email"
-                helperText="Enter your email..."
+                label={t('email')}
+                helperText={t('enter_your_email')}
                 size="small"
                 icon={<MailLockOutlined />}
                 fullWidth
@@ -153,8 +154,8 @@ const LoginForm = () => {
               <TextInput
                 name="password"
                 type="password"
-                label="Password"
-                helperText="Enter your password..."
+                label={t('password')}
+                helperText={t('enter_your_password')}
                 size="small"
                 icon={<PasswordOutlined />}
                 fullWidth
@@ -172,16 +173,16 @@ const LoginForm = () => {
                 }}
               >
                 <Button type="submit" sx={{ width: isMobile ? '50%' : '40%' }}>
-                  Prihlásenie
+                  {t('login')}
                 </Button>
 
                 <Typography>
-                  Ešte nemáte účet?{' '}
+                  {t('no_account_yet')}{' '}
                   <Link
                     to="#"
                     onClick={() => setIsLoginFormActive(!isLoginFormActive)}
                   >
-                    Zaregistrujte sa!
+                    {t('register_yourself')}
                   </Link>
                 </Typography>
 
@@ -218,7 +219,7 @@ const LoginForm = () => {
             <Typography
               sx={{ width: '10%', display: 'flex', justifyContent: 'center' }}
             >
-              OR
+              {t('or_uppercase')}
             </Typography>
             <Box
               sx={{
@@ -277,6 +278,7 @@ const SignInProvidersButton: FC<SignInProvidersButtonProps> = ({
   setSubmissionErrorMessage,
 }) => {
   const { isMobile } = useMediaDevice();
+  const t = useTranslation();
 
   const handleLogin = async () => {
     try {
@@ -305,7 +307,7 @@ const SignInProvidersButton: FC<SignInProvidersButtonProps> = ({
       if (error instanceof FirebaseError) {
         setSubmissionErrorMessage(error.message);
       } else {
-        setSubmissionErrorMessage('Login has failed!');
+        setSubmissionErrorMessage(t('login_failure'));
       }
     }
   };
@@ -326,7 +328,8 @@ const SignInProvidersButton: FC<SignInProvidersButtonProps> = ({
       </Box>
       <Box sx={{ width: '85%' }}>
         <Typography variant="button" sx={{ opacity: '55%' }}>
-          Sign in with {providerName}
+          {t('sign_in_with')}
+          {providerName}
         </Typography>
       </Box>
     </Button>
@@ -342,13 +345,15 @@ const RegisterForm = () => {
   const { setDialog } = useDialog();
   const [isLoginFormActive, setIsLoginFormActive] = useIsLoginFormActive();
 
+  const t = useTranslation();
+
   return (
     <>
       <Typography variant="h5" component="h2">
-        Zaregistrujte sa do jazykovej školy!
+        {t('register_for_language_school')}
       </Typography>
       <Typography variant="body2" component="span">
-        A posuňte svoje jazykové znalosti na novú úroveň!
+        {t('take_language_skills_to_next_level')}
       </Typography>
 
       <Box sx={{ marginTop: 2.5 }}>
@@ -380,31 +385,31 @@ const RegisterForm = () => {
                 description: null,
               });
               setDialog({
-                dialogTitle: 'Úspešná registrácia',
-                dialogData: 'Registrácia prebehla úspešne!',
+                dialogTitle: t('registration_success_title'),
+                dialogData: t('registration_success_msg'),
               });
             } catch (error) {
               console.error(error);
               if (error instanceof FirebaseError) {
                 setSubmissionErrorMessage(error.message);
               } else {
-                setSubmissionErrorMessage('Registration has failed!');
+                setSubmissionErrorMessage(t('registration_failure'));
               }
             }
           }}
           validationSchema={Yup.object({
-            firstName: Yup.string().required('First name field is required!'),
-            lastName: Yup.string().required('Last name field is required!'),
+            firstName: Yup.string().required(t('first_name_field_required')),
+            lastName: Yup.string().required(t('last_name_field_required')),
             email: Yup.string()
-              .email('Invalid format of email!')
-              .required('Email field is required!'),
+              .email(t('invalid_email_format'))
+              .required(t('email_field_required')),
             // TODO - maybe custom validation for stronger password!
             password: Yup.string()
-              .min(8, 'Password must be at least 8 characters long!')
-              .required('Password field is required!'),
+              .min(8, t('invalid_length_password'))
+              .required(t('password_field_required')),
             confirmPassword: Yup.string()
-              .required('Password is required!')
-              .oneOf([Yup.ref('password')], 'Passwords must match!'),
+              .required(t('password_field_required'))
+              .oneOf([Yup.ref('password')], t('passwords_must_match')),
           })}
         >
           {(formik) => (
@@ -419,8 +424,8 @@ const RegisterForm = () => {
                 <TextInput
                   name="firstName"
                   type="text"
-                  label="First Name"
-                  helperText="Enter your first name..."
+                  label={t('first_name')}
+                  helperText={t('enter_your_first_name')}
                   size="small"
                   icon={<AccountCircleOutlined />}
                   fullWidth
@@ -430,8 +435,8 @@ const RegisterForm = () => {
                 <TextInput
                   name="lastName"
                   type="text"
-                  label="Last name"
-                  helperText="Enter your last name..."
+                  label={t('last_name')}
+                  helperText={t('enter_your_last_name')}
                   size="small"
                   icon={<AccountCircleOutlined />}
                   fullWidth
@@ -441,8 +446,8 @@ const RegisterForm = () => {
                 <TextInput
                   name="email"
                   type="email"
-                  label="Email"
-                  helperText="Enter your email..."
+                  label={t('email')}
+                  helperText={t('enter_your_email')}
                   size="small"
                   icon={<MailLockOutlined />}
                   fullWidth
@@ -452,8 +457,8 @@ const RegisterForm = () => {
                 <TextInput
                   name="password"
                   type="password"
-                  label="Password"
-                  helperText="Enter your password..."
+                  label={t('password')}
+                  helperText={t('enter_your_password')}
                   size="small"
                   icon={<PasswordOutlined />}
                   fullWidth
@@ -463,8 +468,8 @@ const RegisterForm = () => {
                 <TextInput
                   name="confirmPassword"
                   type="password"
-                  label="Confirmation of password"
-                  helperText="Enter your password again..."
+                  label={t('confirm_password')}
+                  helperText={t('enter_your_confirmation_password')}
                   size="small"
                   icon={<PasswordOutlined />}
                   fullWidth
@@ -473,7 +478,7 @@ const RegisterForm = () => {
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Button type="reset" sx={{ width: '45%' }}>
-                    Reset
+                    {t('reset')}
                   </Button>
                   <Button
                     type="submit"
@@ -483,18 +488,18 @@ const RegisterForm = () => {
                     {formik.isSubmitting ? (
                       <CircularProgress size={25} />
                     ) : (
-                      'Registrácia'
+                      t('registration')
                     )}
                   </Button>
                 </Box>
 
                 <Typography>
-                  Už máte účet?{' '}
+                  {t('already_have_account')}{' '}
                   <Link
                     to="#"
                     onClick={() => setIsLoginFormActive(!isLoginFormActive)}
                   >
-                    Prihláste sa!
+                    {t('login_yourself')}
                   </Link>
                 </Typography>
 

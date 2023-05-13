@@ -1,18 +1,16 @@
 import { Container, Box, Typography } from '@mui/material';
-import { useMediaDevice } from '../../hooks';
+import { useMediaDevice, useTranslation } from '../../hooks';
 
 const HomeSignedIn = () => {
   const { isMobile } = useMediaDevice();
+  const t = useTranslation();
 
   return (
     <Container>
       <Box marginTop={isMobile ? 4 : 16} textAlign="center">
-        <Typography variant="h3">
-          Vitajte na domovskej stránke aplikácie LangIS!
-        </Typography>
+        <Typography variant="h3">{t('welcome_home_screen')}</Typography>
         <Typography variant="h6" marginTop={2}>
-          Z ponuky vyššie si vyberte aktuálnu ponuku kurzov alebo si
-          prehliadnite vaše aktuálne zaregistrované kurzy.
+          {t('home_screen_msg')}
         </Typography>
       </Box>
     </Container>

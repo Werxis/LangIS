@@ -16,7 +16,12 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { retrieveProfilePhotoUrl } from '../utils';
-import { useDialog, useDocumentTitle, useMediaDevice } from '../hooks';
+import {
+  useDialog,
+  useDocumentTitle,
+  useMediaDevice,
+  useTranslation,
+} from '../hooks';
 
 import { uploadProfilePicture } from '../firebase/storage';
 import { updateUser } from '../firebase/firestore';
@@ -37,16 +42,16 @@ const Profile: FC<ProfilePageProps> = ({ user, userLangIs }) => {
   const { setDialog } = useDialog();
   const navigate = useNavigate();
   useDocumentTitle('LangIS - Profile');
+  const t = useTranslation();
 
   useEffect(() => {
     if (!profileImage) {
       return;
     }
     setDialog({
-      dialogTitle: 'Are you sure',
-      dialogData:
-        'Opravdu chcete zmeniť vašu profilovú fotku za vybranú fotku?',
-      submitLabel: 'Potvrdiť',
+      dialogTitle: t('are_you_sure'),
+      dialogData: t('replace_profile_picture'),
+      submitLabel: t('submit'),
       onSubmit: async () => {
         try {
           const urlOfImage = await uploadProfilePicture(user, profileImage);
@@ -54,14 +59,12 @@ const Profile: FC<ProfilePageProps> = ({ user, userLangIs }) => {
           setProfileImage(null);
           navigate(0);
           // TODO - some nicer feedback than basic alert
-          alert(
-            'Profilová fotka bola úspešne zmenena! Pre zobrazenie zmien je nutné refreshnúť stránku!'
-          );
+          alert(t('profile_picture_change_success'));
         } catch (error) {
           if (error instanceof StorageError) {
             alert(error.message);
           }
-          alert('Uploading of your profile picture has failed!');
+          alert(t('profile_picture_change_failure'));
         }
       },
       onClose: () => setProfileImage(null),
@@ -81,10 +84,10 @@ const Profile: FC<ProfilePageProps> = ({ user, userLangIs }) => {
   };
 
   const rows = [
-    createRow('Email: ', userLangIs, 'email'),
-    createRow('Role: ', userLangIs, 'role'),
-    createRow('Age: ', userLangIs, 'age'),
-    createRow('Location: ', userLangIs, 'location'),
+    createRow(t('email'), userLangIs, 'email'),
+    createRow(t('role'), userLangIs, 'role'),
+    createRow(t('age'), userLangIs, 'age'),
+    createRow(t('location'), userLangIs, 'location'),
   ];
 
   return (
@@ -181,7 +184,7 @@ const Profile: FC<ProfilePageProps> = ({ user, userLangIs }) => {
             component="h2"
             sx={{ fontWeight: 'bold', textDecoration: 'underline' }}
           >
-            Informácie:{' '}
+            {t('information')}
           </Typography>
         </Box>
 
@@ -224,7 +227,7 @@ const Profile: FC<ProfilePageProps> = ({ user, userLangIs }) => {
                           fontStyle: 'italic',
                         }}
                       >
-                        Neuvedeno
+                        {t('not_listed')}
                       </Typography>
                     )}
                   </TableCell>

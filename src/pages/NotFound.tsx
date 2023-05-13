@@ -1,4 +1,4 @@
-import { useDocumentTitle, useMediaDevice } from '../hooks';
+import { useDocumentTitle, useMediaDevice, useTranslation } from '../hooks';
 
 import { Box, Button, Container, Typography } from '@mui/material';
 import BugReportIcon from '@mui/icons-material/BugReport';
@@ -8,6 +8,7 @@ const NotFound = () => {
   useDocumentTitle('LangIS - Not Found');
   const { isMobile } = useMediaDevice();
   const navigate = useNavigate();
+  const t = useTranslation();
 
   return (
     // 8vh header and 7vh footer - need to fix footer
@@ -44,14 +45,13 @@ const NotFound = () => {
 
           <Box>
             <Typography fontSize={'48px'} fontWeight={'bold'}>
-              Page not found!
+              {t('page_not_found')}
             </Typography>
           </Box>
 
           <Box>
             <Typography fontStyle="italic" fontSize={'24px'}>
-              The page you are looking for might have been removed, hat its name
-              changed or is temporalily unavailable.
+              {t('page_not_found_msg')}
             </Typography>
           </Box>
 
@@ -61,7 +61,7 @@ const NotFound = () => {
               sx={{ color: '#0d47a1', borderColor: '#0d47a1' }}
               onClick={() => navigate('/')}
             >
-              Go to Homepage
+              {t('go_to_homepage')}
             </Button>
           </Box>
         </Box>

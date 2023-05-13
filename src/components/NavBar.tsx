@@ -56,7 +56,7 @@ const NavBarSignIn: FC<NavBarSignInProps> = ({ user, userLangIs }) => {
 
   const menuOptions: MenuOption[] = [
     {
-      label: 'Profile',
+      label: t('profile'),
       onClick: () => navigate('/profile'),
       isDesktopOption: true,
     },
@@ -71,7 +71,7 @@ const NavBarSignIn: FC<NavBarSignInProps> = ({ user, userLangIs }) => {
       isDesktopOption: false,
     },
     {
-      label: 'Logout',
+      label: t('logout'),
       onClick: () => logout(),
       isDesktopOption: true,
     },
@@ -221,7 +221,7 @@ const NavBarSignOut = () => {
 
   const handleOpenAboutDialog = () => {
     setDialog({
-      dialogTitle: 'About',
+      dialogTitle: t('about'),
       dialogData: <AboutDialogData />,
       dialogOptions: { size: 'medium' },
     });
