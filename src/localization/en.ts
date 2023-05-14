@@ -38,7 +38,7 @@ export default {
   invalid_length_password: 'Password must be at least 8 characters long',
   passwords_must_match: 'Passwords must match',
   no_account_yet: "Don't have an account yet?",
-  register_yourself: 'Register yourself!',
+  register_yourself: 'Sign up!',
   or_uppercase: 'OR',
   sign_in_with: 'Sign in with ',
   register_for_language_school: 'Register for a language school!',
@@ -88,4 +88,9 @@ export default {
   german: 'German',
   french: 'French',
   courseDetail: 'Course detail',
+  courseAddedSuccessfullyTitle: 'Course created!',
+  courseAddedSuccessfullyMsg: 'The new course has been successfully added.',
+  courseAddedFailed: 'Error - course has not been created!',
+  edit: 'Edit',
+  delete: 'Delete',
 };

@@ -87,4 +87,9 @@ export default {
   german: 'Němčina',
   french: 'Francouzština',
   courseDetail: 'Detail kurzu',
+  courseAddedSuccessfullyTitle: 'Kurz vytvořen!',
+  courseAddedSuccessfullyMsg: 'Nový kurz byl úspěšně přidán.',
+  courseAddedFailed: 'Chyba - kurz nebyl přidán!',
+  edit: 'Upraviť',
+  delete: 'Zmazať',
 };

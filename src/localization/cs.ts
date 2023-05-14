@@ -44,7 +44,7 @@ export default {
   take_language_skills_to_next_level:
     'A posuňte své jazykové znalosti na novou úroveň!',
   reset: 'Resetovat',
-  already_have_account: 'Máte již účet?',
+  already_have_account: 'Už máte účet?',
   login_yourself: 'Přihlaste se!',
   welcome_home_screen: 'Vítejte na domovské stránce aplikace LangIS!',
   home_screen_msg:
@@ -89,4 +89,9 @@ export default {
   french: 'Francouzština',
   moreInfo: 'More info',
   courseDetail: 'Detail kurzu',
+  courseAddedSuccessfullyTitle: 'Kurz vytvořen!',
+  courseAddedSuccessfullyMsg: 'Nový kurz byl úspěšně přidán.',
+  courseAddedFailed: 'Chyba - kurz nebyl přidán!',
+  edit: 'Upravit',
+  delete: 'Smazat',
 };

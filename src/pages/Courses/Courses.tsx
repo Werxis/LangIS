@@ -45,6 +45,7 @@ import {
   updateCourse,
 } from '../../firebase/firestore';
 import { SelectOptions } from '../../components/forms/SingleSelect';
+import { FirebaseError } from 'firebase/app';
 
 interface CoursesPageProps {
   user: User;
@@ -102,7 +103,13 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
       {!(userLangIs.role === 'admin') ? (
         <></>
       ) : !isAddCourseFormActive ? (
-        <Button onClick={() => setIsAddCourseFormActive(true)}>
+        <Button
+          variant="outlined"
+          color="success"
+          startIcon={<AddIcon />}
+          sx={{ marginBottom: '1em' }}
+          onClick={() => setIsAddCourseFormActive(true)}
+        >
           {t('addNewCourse')}
         </Button>
       ) : (
@@ -259,16 +266,27 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
                     ))}
                   {userLangIs.role === 'admin' && (
                     <>
-                      <IconButton>
-                        <Edit />
-                      </IconButton>
-                      <IconButton
+                      {/* TODO pridat funkcionalitu edit course */}
+                      {/* <Button
+                        variant="outlined"
+                        color="warning"
+                        startIcon={<Edit />}
+                        sx={{ width: '80%' }}
+                        onClick={() => console.log('edit course')}
+                      >
+                        {t('edit')}
+                      </Button> */}
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        startIcon={<Delete />}
+                        sx={{ width: '80%' }}
                         onClick={() => {
                           deleteCourse(course.uid);
                         }}
                       >
-                        <Delete />
-                      </IconButton>
+                        Delete
+                      </Button>
                     </>
                   )}
                 </Box>
@@ -289,8 +307,12 @@ export default Courses;
 
 const AddCourseForm = () => {
   const t = useTranslation();
-  const [selectedTeacher, setSelectedTeacher] = useState('');
   const { data: teachers } = useFirestoreQueryOnSnapshot(getTeachersQuery());
+  const { setDialog } = useDialog();
+
+  const [submissionErrorMessage, setSubmissionErrorMessage] = useState<
+    string | null
+  >(null);
 
   const [languageLevelOptions] = useState<SelectOptions<LanguageLevel>>([
     {
@@ -319,13 +341,6 @@ const AddCourseForm = () => {
     },
   ]);
 
-  // export type Language =
-  // | 'English'
-  // | 'español'
-  // | 'italiano'
-  // | 'Deutsch'
-  // | 'français';
-
   const [courseLanguageOptions] = useState<SelectOptions<CourseLanguage>>([
     {
       value: 'English',
@@ -349,12 +364,6 @@ const AddCourseForm = () => {
     },
   ]);
 
-  const [submissionErrorMessage] = useState<string | null>(null);
-
-  const selectTeacher = (e: SelectChangeEvent) => {
-    setSelectedTeacher(e.target.value);
-  };
-
   return (
     <>
       <Typography variant="h5" component="h2">
@@ -374,16 +383,27 @@ const AddCourseForm = () => {
             teacher: '',
           }}
           onSubmit={async (values) => {
-            console.log('test');
-            console.log(values);
-            const courseTeacher = teachers.find(
-              (t) => t.uid === values.teacher
-            );
-            await addCourse({
-              ...values,
-              students: [],
-              teacher: courseTeacher as CourseTeacher,
-            });
+            try {
+              const courseTeacher = teachers.find(
+                (t) => t.uid === values.teacher
+              );
+              await addCourse({
+                ...values,
+                students: [],
+                teacher: courseTeacher as CourseTeacher,
+              });
+              setDialog({
+                dialogTitle: t('courseAddedSuccessfullyTitle'),
+                dialogData: t('courseAddedSuccessfullyMsg'),
+              });
+            } catch (error) {
+              console.error(error);
+              if (error instanceof FirebaseError) {
+                setSubmissionErrorMessage(error.message);
+              } else {
+                setSubmissionErrorMessage(t('courseAddedFailed'));
+              }
+            }
           }}
           validationSchema={Yup.object({
             name: Yup.string().required('Name is required!'),
@@ -421,15 +441,6 @@ const AddCourseForm = () => {
                 required
               />
 
-              {/* <TextInput
-                name="language"
-                type="text"
-                label={t('courseLanguage')}
-                size="small"
-                fullWidth
-                required
-              /> */}
-
               <SingleSelect
                 name="language"
                 id="language"
@@ -437,15 +448,6 @@ const AddCourseForm = () => {
                 label={t('courseLanguage')}
               />
 
-              {/* TODO delete */}
-              {/* <TextInput
-                name="level"
-                type="text"
-                label={t('languageLevel')}
-                size="small"
-                fullWidth
-                required
-              /> */}
               <SingleSelect
                 name="level"
                 id="level"
@@ -470,24 +472,6 @@ const AddCourseForm = () => {
                 fullWidth
                 required
               />
-
-              {/* TODO change to single select */}
-              {/* <InputLabel id="teacher-label">{t('teacher')}</InputLabel>
-              <Select
-                name="teacher"
-                label={t('teacher')}
-                labelId="teacher-label"
-                value={selectedTeacher}
-                onChange={selectTeacher}
-              >
-                {teachers &&
-                  teachers.length > 0 &&
-                  teachers.map((teacher) => (
-                    <MenuItem key={teacher.uid} value={teacher.uid}>
-                      {teacher.firstName} {teacher.lastName}
-                    </MenuItem>
-                  ))}
-              </Select> */}
 
               <SingleSelect
                 name="teacher"
