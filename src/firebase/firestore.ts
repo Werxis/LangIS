@@ -240,3 +240,46 @@ export const addMessage = async (message: Message, courseUid: string) => {
   const collectionRef = getMessagesCollectionRef(courseUid);
   return await addDoc(collectionRef, { ...message });
 };
+
+// - - - - -
+export type CourseRating = {
+  // the document id is the id of the user who rated the course
+  // this ensures 1:1 relationship course : userRating
+  value: number;
+};
+
+export type CourseRatingWithId = CourseRating & { uid: string };
+
+export const getRatingsCollectionRef = (courseUid: string) => {
+  const coll = collection(
+    db,
+    `courses/${courseUid}/ratings`
+  ) as CollectionReference<CourseRating>;
+  return coll;
+};
+
+export const getRatingDocumentRef = (courseUid: string, userUid: string) => {
+  return doc(getRatingsCollectionRef(courseUid), userUid);
+};
+
+export const getRating = async (courseUid: string, userUid: string) => {
+  const documentRef = getRatingDocumentRef(courseUid, userUid);
+  const documentSnapshot = await getDoc(documentRef);
+  if (documentSnapshot.exists()) {
+    const rating: CourseRatingWithId = {
+      ...documentSnapshot.data(),
+      uid: documentSnapshot.id,
+    };
+    return rating;
+  }
+  return undefined;
+};
+
+export const addOrUpdateRating = async (
+  courseUid: string,
+  userUid: string,
+  rating: number
+) => {
+  const documentRef = getRatingDocumentRef(courseUid, userUid);
+  await setDoc(documentRef, { value: rating });
+};

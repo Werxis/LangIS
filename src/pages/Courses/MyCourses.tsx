@@ -6,6 +6,7 @@ import {
   useFirestoreQueryOnSnapshot,
   useMediaDevice,
   useDocumentTitle,
+  useFirestoreDocumentOnSnapshot,
 } from '../../hooks';
 
 import {
@@ -19,10 +20,10 @@ import {
   DialogContent,
   DialogActions,
   IconButton,
-  Rating,
   Stack,
   Typography,
   CircularProgress,
+  Rating,
 } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import ChatIcon from '@mui/icons-material/Chat';
@@ -34,6 +35,11 @@ import {
   LangIsUserWithId,
   getUserCoursesQuery,
   Course,
+  CourseWithId,
+  getRating,
+  CourseRating,
+  getRatingDocumentRef,
+  addOrUpdateRating,
 } from '../../firebase/firestore';
 
 interface MyCoursesPageProps {
@@ -45,9 +51,11 @@ const MyCourses: FC<MyCoursesPageProps> = ({ userLangIs }) => {
   const { data: userCourses, isLoading } = useFirestoreQueryOnSnapshot<Course>(
     getUserCoursesQuery(userLangIs.uid, userLangIs.role)
   );
+  const [selectedCourseUid, setSelectedCourseUid] = useState<string>();
 
   // TODO rating fetched from BE as course.rating
   // null if course was not rated before, otherwise floating point number from 0 to 5 with precision 0.5
+  // TODO redo - at the moment all courses will shares this value
   const courseRating: number | null = null;
 
   const [isRatingDialogOpen, setIsRatingDialogOpen] = useState<boolean>(false);
@@ -57,7 +65,10 @@ const MyCourses: FC<MyCoursesPageProps> = ({ userLangIs }) => {
   const t = useTranslation();
   useDocumentTitle('LangIS - My Courses');
 
-  const openRatingDialog = () => setIsRatingDialogOpen(true);
+  const openRatingDialog = (courseUid: string) => {
+    setIsRatingDialogOpen(true);
+    setSelectedCourseUid(courseUid);
+  };
   const closeRatingDialog = () => setIsRatingDialogOpen(false);
 
   if (isLoading) {
@@ -133,7 +144,7 @@ const MyCourses: FC<MyCoursesPageProps> = ({ userLangIs }) => {
               >
                 <IconButton
                   size="medium"
-                  onClick={openRatingDialog}
+                  onClick={() => openRatingDialog(course.uid)}
                   sx={{
                     alignSelf: isMobile ? 'end' : undefined,
                     marginRight: isMobile ? 1.0 : 0,
@@ -171,6 +182,8 @@ const MyCourses: FC<MyCoursesPageProps> = ({ userLangIs }) => {
       <RatingDialog
         isDialogOpen={isRatingDialogOpen}
         closeDialog={closeRatingDialog}
+        courseUid={selectedCourseUid!}
+        userUid={userLangIs.uid}
       />
     </Container>
   );
@@ -183,17 +196,32 @@ export default MyCourses;
 interface RatingDialogProps {
   isDialogOpen: boolean;
   closeDialog: () => void;
+  courseUid: string;
+  userUid: string;
 }
 
-const RatingDialog: FC<RatingDialogProps> = ({ isDialogOpen, closeDialog }) => {
-  const [courseRating, setCourseRating] = useState<number | null>(null);
+const RatingDialog: FC<RatingDialogProps> = ({
+  isDialogOpen,
+  closeDialog,
+  courseUid,
+  userUid,
+}) => {
+  const [ratingRef] = useState(getRatingDocumentRef(courseUid, userUid));
+  const { data: rating } =
+    useFirestoreDocumentOnSnapshot<CourseRating>(ratingRef);
+
+  const [courseRating, setCourseRating] = useState<number | null>(
+    rating?.value ?? null
+  );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleRatingSubmit = async () => {
     setIsSubmitting(true);
     // TODO remove test PROMISE and Submit current rating value to the FIRESTORE DB
     console.log('courseRatingToSubmit: ', courseRating);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    console.log('userUid: ', userUid);
+    console.log('courseUid: ', courseUid);
+    await addOrUpdateRating(courseUid, userUid, courseRating ?? 0);
     setIsSubmitting(false);
     closeDialog();
   };
