@@ -20,9 +20,6 @@ import {
   Container,
   Grid,
   IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
   SelectChangeEvent,
   Typography,
 } from '@mui/material';
@@ -31,20 +28,23 @@ import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
 import InfoIcon from '@mui/icons-material/Info';
 
-import { TextInput } from '../../components/forms';
+import { SingleSelect, TextInput } from '../../components/forms';
 
 import { User } from 'firebase/auth';
 import {
   Course,
+  CourseLanguage,
   CourseTeacher,
   CourseWithId,
   LangIsUserWithId,
+  LanguageLevel,
   addCourse,
   deleteCourse,
   getCoursesCollectionRef,
   getTeachersQuery,
   updateCourse,
 } from '../../firebase/firestore';
+import { SelectOptions } from '../../components/forms/SingleSelect';
 
 interface CoursesPageProps {
   user: User;
@@ -80,28 +80,6 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
     await updateCourse(uid, { students });
   };
 
-  const addCourseTest = async () => {
-    const courseTeacher: CourseTeacher = {
-      uid: 'hZQhgSs2VEea7NiKy0jNaB4yNFh1',
-      firstName: 'Tomáš',
-      lastName: 'Učitel',
-      photoUrl:
-        'https://firebasestorage.googleapis.com/v0/b/langis-93ba3.appspot.com/o/images%2Fprofile_pictures%2FhZQhgSs2VEea7NiKy0jNaB4yNFh1__teacher%20test%20crop.jpg?alt=media&token=f30f8ee2-99fd-47d1-9d7a-f7b9abb357b1',
-    };
-    const testCourse: Course = {
-      name: 'Kurz špatnělštiny test',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      language: 'espanol',
-      level: 'A2',
-      price: 4000,
-      capacity: 15,
-      students: [],
-      teacher: courseTeacher,
-    };
-    await addCourse(testCourse);
-  };
-
   if (isLoading) {
     return null;
   }
@@ -121,10 +99,6 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
       </Typography>
 
       {/* Admin stuff */}
-      {/* TODO delete test button */}
-      {userLangIs.role === 'admin' && (
-        <Button onClick={addCourseTest}>Add course (TEST)</Button>
-      )}
       {!(userLangIs.role === 'admin') ? (
         <></>
       ) : !isAddCourseFormActive ? (
@@ -249,7 +223,7 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
                     sx={{ width: '80%' }}
                     onClick={() => navigate(`/courses/${course.uid}`)}
                   >
-                    More Info
+                    {t('courseDetail')}
                   </Button>
                   {userLangIs.role === 'student' &&
                     (course.students.includes(userLangIs.uid) ? (
@@ -318,6 +292,63 @@ const AddCourseForm = () => {
   const [selectedTeacher, setSelectedTeacher] = useState('');
   const { data: teachers } = useFirestoreQueryOnSnapshot(getTeachersQuery());
 
+  const [languageLevelOptions] = useState<SelectOptions<LanguageLevel>>([
+    {
+      value: 'A1',
+      label: `A1 - ${t('beginner')}`,
+    },
+    {
+      value: 'A2',
+      label: `A2 - ${t('elemenatary')}`,
+    },
+    {
+      value: 'B1',
+      label: `B1 - ${t('preIntermediate')}`,
+    },
+    {
+      value: 'B2',
+      label: `B2 - ${t('intermediate')}`,
+    },
+    {
+      value: 'C1',
+      label: `C1 - ${t('upperIntermediate')}`,
+    },
+    {
+      value: 'C2',
+      label: `C2 - ${t('advanced')}`,
+    },
+  ]);
+
+  // export type Language =
+  // | 'English'
+  // | 'español'
+  // | 'italiano'
+  // | 'Deutsch'
+  // | 'français';
+
+  const [courseLanguageOptions] = useState<SelectOptions<CourseLanguage>>([
+    {
+      value: 'English',
+      label: t('english'),
+    },
+    {
+      value: 'español',
+      label: t('spanish'),
+    },
+    {
+      value: 'italiano',
+      label: t('italian'),
+    },
+    {
+      value: 'Deutsch',
+      label: t('german'),
+    },
+    {
+      value: 'français',
+      label: t('french'),
+    },
+  ]);
+
   const [submissionErrorMessage] = useState<string | null>(null);
 
   const selectTeacher = (e: SelectChangeEvent) => {
@@ -333,12 +364,13 @@ const AddCourseForm = () => {
       <Box sx={{ marginTop: 2.5 }}>
         <Formik
           initialValues={{
-            name: '',
-            description: '',
-            language: '',
-            level: '',
-            capacity: 0,
-            price: 0,
+            name: 'Kurz španělštiny pro začátečníky',
+            description:
+              'Už jste se naučili základy a chcete procvičovat dál? Pak je přesně tento kurz pro vás! Zkušený lektor vás naučí vše, co byste mohli potřebovat pro běžné situace v cizí zemi - přes objednání v restuaci po rezervaci v hotelu.',
+            language: 'español',
+            level: 'A2',
+            capacity: 8,
+            price: 4399,
             teacher: '',
           }}
           onSubmit={async (values) => {
@@ -356,11 +388,11 @@ const AddCourseForm = () => {
           validationSchema={Yup.object({
             name: Yup.string().required('Name is required!'),
             description: Yup.string().required('Description is required!'),
-            language: Yup.string().required('Language is required!'),
-            level: Yup.string().required('Level is required!'),
+            language: Yup.mixed().required('Language is required!'),
+            level: Yup.mixed().required('Level is required!'),
             capacity: Yup.string().required('Capacity is required!'),
             price: Yup.number().required('Price is required!'),
-            teacher: Yup.string().required('Teacher is required!'),
+            teacher: Yup.mixed().required('Teacher is required!'),
           })}
         >
           <Form>
@@ -389,22 +421,36 @@ const AddCourseForm = () => {
                 required
               />
 
-              <TextInput
+              {/* <TextInput
                 name="language"
                 type="text"
                 label={t('courseLanguage')}
                 size="small"
                 fullWidth
                 required
+              /> */}
+
+              <SingleSelect
+                name="language"
+                id="language"
+                options={courseLanguageOptions}
+                label={t('courseLanguage')}
               />
 
-              <TextInput
+              {/* TODO delete */}
+              {/* <TextInput
                 name="level"
                 type="text"
                 label={t('languageLevel')}
                 size="small"
                 fullWidth
                 required
+              /> */}
+              <SingleSelect
+                name="level"
+                id="level"
+                options={languageLevelOptions}
+                label={t('languageLevel')}
               />
 
               <TextInput
@@ -426,7 +472,7 @@ const AddCourseForm = () => {
               />
 
               {/* TODO change to single select */}
-              <InputLabel id="teacher-label">{t('teacher')}</InputLabel>
+              {/* <InputLabel id="teacher-label">{t('teacher')}</InputLabel>
               <Select
                 name="teacher"
                 label={t('teacher')}
@@ -441,7 +487,17 @@ const AddCourseForm = () => {
                       {teacher.firstName} {teacher.lastName}
                     </MenuItem>
                   ))}
-              </Select>
+              </Select> */}
+
+              <SingleSelect
+                name="teacher"
+                id="teacher"
+                options={teachers?.map((teacher) => ({
+                  label: `${teacher.firstName} ${teacher.lastName}`,
+                  value: teacher.uid,
+                }))}
+                label={t('teacher')}
+              />
 
               <Box
                 sx={{

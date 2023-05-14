@@ -56,8 +56,7 @@ export default {
   submit: 'Submit',
   profile_picture_change_success:
     'Profile photo has been successfully changed! You must refresh the page to see the changes!',
-  profile_picture_change_failure:
-    'Nahrání vašeho profilového obrázku se nezdařilo!',
+  profile_picture_change_failure: 'Profile photo upload has failed!',
   not_listed: 'Not listed',
   information: 'Information: ',
   email: 'Email: ',
@@ -77,4 +76,16 @@ export default {
   enter_your_last_name: 'Enter your last name...',
   confirm_password: 'Confirmation of password: ',
   enter_your_confirmation_password: 'Enter your password again...',
+  beginner: 'Beginner',
+  elemenatary: 'Elementary',
+  preIntermediate: 'Pre-Intermediate',
+  intermediate: 'Intermediate',
+  upperIntermediate: 'Upper-Intermediate',
+  advanced: 'Advanced',
+  english: 'English',
+  spanish: 'Spanish',
+  italian: 'Italian',
+  german: 'German',
+  french: 'French',
+  courseDetail: 'Course detail',
 };
