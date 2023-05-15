@@ -94,4 +94,5 @@ export default {
   courseAddedFailed: 'Chyba - kurz nebyl přidán!',
   edit: 'Upravit',
   delete: 'Smazat',
+  noLessonsAvailable: 'Tento kurz nemá aktuálně žádné lekce',
 };

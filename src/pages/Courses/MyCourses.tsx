@@ -217,7 +217,6 @@ const RatingDialog: FC<RatingDialogProps> = ({
 
   const handleRatingSubmit = async () => {
     setIsSubmitting(true);
-    // TODO remove test PROMISE and Submit current rating value to the FIRESTORE DB
     console.log('courseRatingToSubmit: ', courseRating);
     console.log('userUid: ', userUid);
     console.log('courseUid: ', courseUid);

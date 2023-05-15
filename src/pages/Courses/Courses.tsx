@@ -87,7 +87,9 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
 
   return (
     <Container
-      sx={{ marginBottom: deviceType === 'mobile' ? '75px' : '100px' }}
+      sx={{
+        marginBottom: deviceType === 'mobile' ? '75px' : '100px',
+      }}
     >
       {/* Title */}
       <Typography
@@ -223,34 +225,36 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
                     gap: 1,
                   }}
                 >
-                  <Button
-                    variant="outlined"
-                    color="info"
-                    startIcon={<InfoIcon />}
-                    sx={{ width: '80%' }}
-                    onClick={() => navigate(`/courses/${course.uid}`)}
-                  >
-                    {t('courseDetail')}
-                  </Button>
                   {userLangIs.role === 'student' &&
                     (course.students.includes(userLangIs.uid) ? (
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        startIcon={<CancelIcon />}
-                        onClick={() =>
-                          setDialog({
-                            dialogTitle: 'Zrušenie zápisu',
-                            dialogData:
-                              'Ste si naprosto istý, že sa chcete odpísať z nasledujúceho kurzu?',
-                            submitLabel: 'Cancel Enrollment',
-                            onSubmit: () => cancelUserEnrollment(course),
-                          })
-                        }
-                        sx={{ width: '80%' }}
-                      >
-                        {t('cancelEnrollment')}
-                      </Button>
+                      <>
+                        <Button
+                          variant="outlined"
+                          color="info"
+                          startIcon={<InfoIcon />}
+                          sx={{ width: '80%' }}
+                          onClick={() => navigate(`/courses/${course.uid}`)}
+                        >
+                          {t('courseDetail')}
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          startIcon={<CancelIcon />}
+                          onClick={() =>
+                            setDialog({
+                              dialogTitle: 'Zrušenie zápisu',
+                              dialogData:
+                                'Ste si naprosto istý, že sa chcete odpísať z nasledujúceho kurzu?',
+                              submitLabel: 'Cancel Enrollment',
+                              onSubmit: () => cancelUserEnrollment(course),
+                            })
+                          }
+                          sx={{ width: '80%' }}
+                        >
+                          {t('cancelEnrollment')}
+                        </Button>
+                      </>
                     ) : course.students.length < course.capacity ? (
                       <Button
                         variant="outlined"
@@ -285,7 +289,7 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
                           deleteCourse(course.uid);
                         }}
                       >
-                        Delete
+                        {t('delete')}
                       </Button>
                     </>
                   )}

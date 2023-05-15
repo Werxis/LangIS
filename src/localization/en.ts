@@ -93,4 +93,5 @@ export default {
   courseAddedFailed: 'Error - course has not been created!',
   edit: 'Edit',
   delete: 'Delete',
+  noLessonsAvailable: 'This course has no lessons at the moment',
 };

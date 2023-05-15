@@ -4,11 +4,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
   Course,
   LangIsUserWithId,
+  Lesson,
   getCourseDocumentRef,
+  getLessonsCollectionRef,
 } from '../../firebase/firestore';
 import useFirestoreDocumentOnSnapshot from '../../hooks/useFirestoreDocumentOnSnapshot';
 import { Box, Typography, Container, Button } from '@mui/material';
 import { useDocumentTitle, useTranslation } from '../../hooks';
+import useFirestoreCollectionOnSnapshot from '../../hooks/useFirestoreCollectionOnSnapshot';
 
 interface MyCoursesDetailPageProps {
   user: User;
@@ -21,6 +24,11 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = () => {
   const { courseUid } = useParams();
   const [courseRef] = useState(getCourseDocumentRef(courseUid as string));
   const { data: course } = useFirestoreDocumentOnSnapshot<Course>(courseRef);
+
+  const [lessonsRef] = useState(getLessonsCollectionRef(courseUid as string));
+  const { data: lessons } =
+    useFirestoreCollectionOnSnapshot<Lesson>(lessonsRef);
+
   useDocumentTitle(`LangIS - Course Detail`);
 
   return (
@@ -44,6 +52,15 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = () => {
           >
             {t('groupChat')}
           </Button>
+          {lessons &&
+            lessons.map((lesson) => (
+              <Box key={lesson.uid}>
+                <Typography>{lesson.description}</Typography>
+              </Box>
+            ))}
+          {lessons.length === 0 && (
+            <Typography>{t('noLessonsAvailable')}</Typography>
+          )}
           <Typography>{course.description}</Typography>
           <Typography>{course.language}</Typography>
           <Typography>

@@ -283,3 +283,38 @@ export const addOrUpdateRating = async (
   const documentRef = getRatingDocumentRef(courseUid, userUid);
   await setDoc(documentRef, { value: rating });
 };
+
+// - - - - -
+export type Lesson = {
+  start: Timestamp;
+  lengthMinutes: number;
+  classroom: string;
+  description: string;
+  fileUrl: string | null;
+};
+
+export type LessonWithId = Lesson & { uid: string };
+
+export const getLessonsCollectionRef = (courseUid: string) => {
+  const coll = collection(
+    db,
+    `courses/${courseUid}/lessons`
+  ) as CollectionReference<Lesson>;
+  return coll;
+};
+
+export const getLessonDocumentRef = (courseUid: string, lessonUid: string) =>
+  doc(
+    getLessonsCollectionRef(courseUid),
+    lessonUid
+  ) as DocumentReference<Lesson>;
+
+export const getLessons = async (courseUid: string) => {
+  const collectionRef = getLessonsCollectionRef(courseUid);
+  const querySnaphot = await getDocs(collectionRef);
+  const lessons: LessonWithId[] = querySnaphot.docs.map((doc) => ({
+    ...doc.data(),
+    uid: doc.id,
+  }));
+  return lessons;
+};
