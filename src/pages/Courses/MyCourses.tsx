@@ -35,8 +35,6 @@ import {
   LangIsUserWithId,
   getUserCoursesQuery,
   Course,
-  CourseWithId,
-  getRating,
   CourseRating,
   getRatingDocumentRef,
   addOrUpdateRating,
@@ -103,19 +101,6 @@ const MyCourses: FC<MyCoursesPageProps> = ({ userLangIs }) => {
 
                 {/* TODO Lessons */}
                 <Box marginTop={2}>
-                  <Box>
-                    <Typography
-                      fontStyle={'italic'}
-                      fontSize={18}
-                      sx={{ textDecoration: 'underline' }}
-                    >
-                      Previous lesson:
-                    </Typography>
-                    <Typography marginLeft={2} marginTop={1}>
-                      {'4.) Podstatné mená'}
-                    </Typography>
-                  </Box>
-
                   <Box marginTop={2}>
                     <Typography
                       fontStyle={'italic'}
@@ -147,7 +132,7 @@ const MyCourses: FC<MyCoursesPageProps> = ({ userLangIs }) => {
                   onClick={() => openRatingDialog(course.uid)}
                   sx={{
                     alignSelf: isMobile ? 'end' : undefined,
-                    marginRight: isMobile ? 1.0 : 0,
+                    // marginRight: isMobile ? 0 : 1.0,
                     border: '1px solid rgba(25, 118, 210, 0.5)',
                     color: 'rgba(25, 118, 210, 0.5)',
                     borderRadius: '10%',
@@ -160,14 +145,14 @@ const MyCourses: FC<MyCoursesPageProps> = ({ userLangIs }) => {
                   startIcon={<ChatIcon />}
                   onClick={() => navigate(`/courses/${course.uid}/chat`)}
                 >
-                  Course Group chat
+                  {t('groupChat')}
                 </Button>
                 <Button
                   variant="outlined"
                   startIcon={<InfoIcon />}
                   onClick={() => navigate(`/courses/${course.uid}`)}
                 >
-                  See more course details
+                  {t('courseDetail')}
                 </Button>
               </Box>
             </Card>
@@ -182,7 +167,7 @@ const MyCourses: FC<MyCoursesPageProps> = ({ userLangIs }) => {
       <RatingDialog
         isDialogOpen={isRatingDialogOpen}
         closeDialog={closeRatingDialog}
-        courseUid={selectedCourseUid!}
+        courseUid={selectedCourseUid as string}
         userUid={userLangIs.uid}
       />
     </Container>
@@ -191,6 +176,7 @@ const MyCourses: FC<MyCoursesPageProps> = ({ userLangIs }) => {
 
 export default MyCourses;
 
+// TODO delete this whole thing
 // - - -
 
 interface RatingDialogProps {
@@ -238,6 +224,8 @@ const RatingDialog: FC<RatingDialogProps> = ({
         >
           <Rating
             name="course-rating"
+            // TODO value course.avgRating and precision 0.1 and just display it, nothing fancy
+            // probably just move it to the course offer, it really has no place to be here - you want to see it when buying the course
             value={courseRating ?? 1}
             precision={0.5}
             size="large"

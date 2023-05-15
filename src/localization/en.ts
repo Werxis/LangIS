@@ -94,4 +94,8 @@ export default {
   edit: 'Edit',
   delete: 'Delete',
   noLessonsAvailable: 'This course has no lessons at the moment',
+  lesson: 'Lesson',
+  minutes: 'minutes',
+  classroom: 'Classroom',
+  lessonContent: 'Lesson content',
 };

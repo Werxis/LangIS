@@ -93,4 +93,8 @@ export default {
   edit: 'Upraviť',
   delete: 'Zmazať',
   noLessonsAvailable: 'Tento kurz nemá aktuálně žádné lekce',
+  lesson: 'Lekce',
+  minutes: 'minut',
+  classroom: 'Učebna',
+  lessonContent: 'Náplň lekce',
 };
