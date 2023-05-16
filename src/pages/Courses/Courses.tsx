@@ -21,10 +21,9 @@ import {
   Grid,
   IconButton,
   Rating,
-  SelectChangeEvent,
   Typography,
 } from '@mui/material';
-import { Close, Delete, Edit } from '@mui/icons-material';
+import { Close, Delete } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
 import InfoIcon from '@mui/icons-material/Info';

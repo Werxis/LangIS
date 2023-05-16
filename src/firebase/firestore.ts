@@ -14,7 +14,6 @@ import {
   deleteDoc,
   Timestamp,
   orderBy,
-  // Timestamp
 } from 'firebase/firestore';
 import { app } from './app';
 
@@ -133,7 +132,6 @@ export const getCourseDocumentRef = (uid: string) =>
   doc(db, 'courses', uid) as DocumentReference<Course>;
 
 export const getCoursesCollectionRef = () => {
-  // TODO change to .withConverter()
   const coll = collection(db, 'courses') as CollectionReference<Course>;
   return coll;
 };
@@ -146,19 +144,6 @@ export const getCourses = async () => {
     ...doc.data(),
   }));
   return courses;
-};
-
-export const getUserCourses = async (userUid: string, userRole: string) => {
-  const q = query(
-    getCoursesCollectionRef(),
-    where('students', 'array-contains', userUid)
-  );
-  const querySnapshot = await getDocs(q);
-  const userCourses: CourseWithId[] = querySnapshot.docs.map((doc) => ({
-    ...doc.data(),
-    uid: doc.id,
-  }));
-  return userCourses;
 };
 
 export const getUserCoursesQuery = (userUid: string, userRole: string) => {

@@ -54,7 +54,7 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
   const [lessonQuery] = useState(getLessonsOrderedQuery(courseUid as string));
   const { data: lessons } = useFirestoreQueryOnSnapshot<Lesson>(lessonQuery);
 
-  const { deviceType, isMobile } = useMediaDevice();
+  const { isMobile } = useMediaDevice();
   useDocumentTitle(`LangIS - Course Detail`);
 
   const [ratingRef] = useState(
@@ -144,7 +144,6 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
                 onClick={() => openRatingDialog()}
                 sx={{
                   alignSelf: isMobile ? 'start' : undefined,
-                  // marginRight: isMobile ? 1.0 : 0,
                   border: '1px solid rgba(25, 118, 210, 0.5)',
                   color: 'rgba(25, 118, 210, 0.5)',
                   borderRadius: '10%',
@@ -174,10 +173,10 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
       )}
       {!course && <Typography>404</Typography>}
       {lessons.length !== 0 && (
-        // marginBottom because of footer size
         <Stack
           direction="column"
           spacing={2}
+          // marginBottom because of footer size
           sx={{ width: '100%', marginBottom: '5em' }}
         >
           {lessons.map((lesson, index) => (
@@ -188,12 +187,13 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
                     display: 'grid',
                     justifyContent: 'space-between',
                     alignItems: 'center',
+                    rowGap: '0.25em',
                   }}
                 >
                   <Typography fontWeight="bold" fontSize={20}>
                     {t('lesson')} {index + 1}
                   </Typography>
-                  <Typography>
+                  <Typography sx={{ fontStyle: 'italic' }}>
                     {lesson.start.toDate().toLocaleDateString('cs', {
                       day: 'numeric',
                       month: 'numeric',
@@ -211,35 +211,6 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
                     {t('classroom')}: {lesson.classroom}
                   </Typography>
                 </Box>
-
-                {/* TODO Lessons */}
-                {/* <Box marginTop={2}>
-                  <Box>
-                    <Typography
-                      fontStyle={'italic'}
-                      fontSize={18}
-                      sx={{ textDecoration: 'underline' }}
-                    >
-                      Previous lesson:
-                    </Typography>
-                    <Typography marginLeft={2} marginTop={1}>
-                      {'4.) Podstatné mená'}
-                    </Typography>
-                  </Box>
-
-                  <Box marginTop={2}>
-                    <Typography
-                      fontStyle={'italic'}
-                      fontSize={18}
-                      sx={{ textDecoration: 'underline' }}
-                    >
-                      Next lesson:
-                    </Typography>
-                    <Typography marginLeft={2} marginTop={1}>
-                      {'5.) Pridávné mená'}
-                    </Typography>
-                  </Box>
-                </Box> */}
               </CardContent>
             </Card>
           ))}

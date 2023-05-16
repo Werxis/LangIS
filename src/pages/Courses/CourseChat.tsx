@@ -36,9 +36,6 @@ const MyCourseDetail: FC<MyCourseChatPageProps> = ({ userLangIs }) => {
   const { data: course } = useFirestoreDocumentOnSnapshot<Course>(courseRef);
   useDocumentTitle(`LangIS - Course chat`);
 
-  //   const [messagesRef] = useState(getMessagesCollectionRef(courseUid as string));
-  //   const { data: messages } = useFirestoreCollectionOnSnapshot(messagesRef);
-  // TODO order by ascending timestamp
   const [messagesQuery] = useState(
     getMessagesOrderedQuery(courseUid as string)
   );
