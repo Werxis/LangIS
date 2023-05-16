@@ -20,6 +20,7 @@ import {
   Container,
   Grid,
   IconButton,
+  Rating,
   SelectChangeEvent,
   Typography,
 } from '@mui/material';
@@ -212,6 +213,21 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
                       <Typography fontWeight={'bold'}>{t('price')}:</Typography>
                       <Typography>{course.price} CZK</Typography>
                     </Box>
+                    <Typography fontWeight={'bold'}>
+                      {t('averageRating')}:{' '}
+                    </Typography>
+                    {course.averageRating ? (
+                      <Rating
+                        name="average-rating"
+                        value={course.averageRating}
+                        precision={0.1}
+                        size="large"
+                      />
+                    ) : (
+                      <Typography sx={{ fontStyle: 'italic' }}>
+                        {t('noRating')}
+                      </Typography>
+                    )}
                   </Box>
                 </CardContent>
 
@@ -266,7 +282,9 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
                         {t('enrollInCourse')}
                       </Button>
                     ) : (
-                      <Typography>{t('courseFull')}</Typography>
+                      <Typography variant="button">
+                        {t('courseFull')}
+                      </Typography>
                     ))}
                   {userLangIs.role === 'admin' && (
                     <>

@@ -97,4 +97,6 @@ export default {
   minutes: 'minut',
   classroom: 'Učebna',
   lessonContent: 'Náplň lekce',
+  averageRating: 'Průměrné hodnocení',
+  noRating: 'Zatím nehodnoceno',
 };

@@ -98,4 +98,6 @@ export default {
   minutes: 'minutes',
   classroom: 'Classroom',
   lessonContent: 'Lesson content',
+  averageRating: 'Average rating',
+  noRating: 'No rating yet',
 };
