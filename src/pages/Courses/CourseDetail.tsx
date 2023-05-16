@@ -12,6 +12,7 @@ import {
   getCourseDocumentRef,
   getLessonsOrderedQuery,
   getRatingDocumentRef,
+  updateLesson,
 } from '../../firebase/firestore';
 import useFirestoreDocumentOnSnapshot from '../../hooks/useFirestoreDocumentOnSnapshot';
 import {
@@ -51,6 +52,7 @@ import {
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { Timestamp } from 'firebase/firestore';
+import { Edit } from '@mui/icons-material';
 
 interface MyCoursesDetailPageProps {
   user: User;
@@ -220,30 +222,40 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
                   sx={{
                     display: 'grid',
                     justifyContent: 'space-between',
-                    alignItems: 'center',
                     rowGap: '0.25em',
                   }}
                 >
+                  <Button
+                    variant="outlined"
+                    color="warning"
+                    startIcon={<Edit />}
+                    sx={{ gridRow: 1, gridColumn: 2 }}
+                    onClick={() => openLessonDialog(lesson)}
+                  >
+                    {t('edit')}
+                  </Button>
                   <Typography fontWeight="bold" fontSize={20}>
                     {t('lesson')} {index + 1}
                   </Typography>
-                  <Typography sx={{ fontStyle: 'italic' }}>
-                    {lesson.start.toDate().toLocaleDateString('cs', {
-                      day: 'numeric',
-                      month: 'numeric',
-                    })}{' '}
-                    {lesson.start.toDate().toLocaleTimeString('cs', {
-                      hour: 'numeric',
-                      minute: 'numeric',
-                    })}{' '}
-                    ({lesson.lengthMinutes} {t('minutes')})
-                  </Typography>
-                  <Typography>
-                    {t('lessonContent')}: {lesson.description}
-                  </Typography>
-                  <Typography>
-                    {t('classroom')}: {lesson.classroom}
-                  </Typography>
+                  <Box sx={{ gridColumn: 1 }}>
+                    <Typography sx={{ fontStyle: 'italic' }}>
+                      {lesson.start.toDate().toLocaleDateString('cs', {
+                        day: 'numeric',
+                        month: 'numeric',
+                      })}{' '}
+                      {lesson.start.toDate().toLocaleTimeString('cs', {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                      })}{' '}
+                      ({lesson.lengthMinutes} {t('minutes')})
+                    </Typography>
+                    <Typography>
+                      {t('lessonContent')}: {lesson.description}
+                    </Typography>
+                    <Typography>
+                      {t('classroom')}: {lesson.classroom}
+                    </Typography>
+                  </Box>
                 </Box>
               </CardContent>
             </Card>
@@ -345,7 +357,6 @@ interface LessonDialogProps {
   courseUid: string;
 }
 
-// TODO;
 const LessonDialog: FC<LessonDialogProps> = ({
   isDialogOpen,
   closeDialog,
@@ -354,12 +365,28 @@ const LessonDialog: FC<LessonDialogProps> = ({
 }) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const t = useTranslation();
-  const [lessonData, setLessonData] = useState({
-    start: dayjs(selectedLesson?.start.toMillis()) ?? dayjs(Date.now()),
-    lengthMinutes: selectedLesson?.lengthMinutes ?? 60,
-    classroom: selectedLesson?.classroom ?? '12C',
-    description: selectedLesson?.description ?? 'Použití průběhových časů',
-  });
+  const initialData = {
+    start: dayjs(),
+    lengthMinutes: 60,
+    classroom: '12C',
+    description: 'Použití průběhových časů',
+  };
+
+  const [lessonData, setLessonData] = useState(initialData);
+
+  useEffect(() => {
+    if (selectedLesson) {
+      setLessonData((prevData) => ({
+        ...prevData,
+        start: dayjs(selectedLesson.start.toMillis()),
+        lengthMinutes: selectedLesson.lengthMinutes,
+        classroom: selectedLesson.classroom,
+        description: selectedLesson.description,
+      }));
+    } else {
+      setLessonData(initialData);
+    }
+  }, [selectedLesson]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -375,18 +402,21 @@ const LessonDialog: FC<LessonDialogProps> = ({
 
   const handleLessonSubmit = async () => {
     setIsSubmitting(true);
+    const lesson: Lesson = {
+      start: Timestamp.fromDate(lessonData.start.toDate()),
+      lengthMinutes: lessonData.lengthMinutes,
+      classroom: lessonData.classroom,
+      description: lessonData.description,
+      fileUrl: null,
+    };
     if (selectedLesson === null) {
       console.log('add new lesson');
-      const lesson: Lesson = {
-        start: Timestamp.fromDate(lessonData.start.toDate()),
-        lengthMinutes: lessonData.lengthMinutes,
-        classroom: lessonData.classroom,
-        description: lessonData.description,
-        fileUrl: null,
-      };
+      console.log(lesson);
       addLesson(lesson, courseUid);
     } else {
       console.log('edit lesson');
+      console.log(lesson);
+      updateLesson(courseUid, selectedLesson.uid, lesson);
     }
 
     setIsSubmitting(false);
@@ -395,7 +425,7 @@ const LessonDialog: FC<LessonDialogProps> = ({
 
   return (
     <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth={'xs'} fullWidth>
-      <DialogTitle>TODO test title add lesson</DialogTitle>
+      <DialogTitle>{t('addNewLesson')}</DialogTitle>
       <DialogContent>
         <Box
           sx={{
@@ -410,14 +440,14 @@ const LessonDialog: FC<LessonDialogProps> = ({
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateTimePicker
               sx={{ width: '100%' }}
-              label="TODO change"
+              label={t('lessonDateAndTime')}
               value={lessonData.start}
               onChange={(newValue) => handleDateChange(newValue)}
             />
           </LocalizationProvider>
           <TextField
             name="lengthMinutes"
-            label="Length (Minutes)"
+            label={t('lessonLengthInMinutes')}
             type="number"
             value={lessonData.lengthMinutes}
             onChange={handleChange}
@@ -426,7 +456,7 @@ const LessonDialog: FC<LessonDialogProps> = ({
           />
           <TextField
             name="classroom"
-            label="Classroom"
+            label={t('classroom')}
             value={lessonData.classroom}
             onChange={handleChange}
             required
@@ -434,7 +464,7 @@ const LessonDialog: FC<LessonDialogProps> = ({
           />
           <TextField
             name="description"
-            label="Description"
+            label={t('lessonContent')}
             multiline
             rows={4}
             value={lessonData.description}
@@ -453,11 +483,7 @@ const LessonDialog: FC<LessonDialogProps> = ({
           sx={{ minWidth: 100 }}
           onClick={handleLessonSubmit}
         >
-          {isSubmitting ? (
-            <CircularProgress size={25} />
-          ) : (
-            'TODO add new lesson'
-          )}
+          {isSubmitting ? <CircularProgress size={25} /> : t('addNewLesson')}
         </Button>
       </DialogActions>
     </Dialog>

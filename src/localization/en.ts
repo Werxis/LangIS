@@ -104,4 +104,6 @@ export default {
   rateThisCourse: 'Rate this course!',
   cancel: 'Cancel',
   rate: 'Rate!',
+  lessonLengthInMinutes: 'Length in minutes',
+  lessonDateAndTime: 'Date and time',
 };

@@ -103,4 +103,6 @@ export default {
   rateThisCourse: 'Ohodnoťte tento kurz!',
   cancel: 'Zrušit',
   rate: 'Ohodnotit!',
+  lessonLengthInMinutes: 'Délka v minutách',
+  lessonDateAndTime: 'Datum a čas',
 };

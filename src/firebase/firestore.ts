@@ -326,3 +326,12 @@ export const addLesson = async (lesson: Lesson, courseUid: string) => {
   const collectionRef = getLessonsCollectionRef(courseUid);
   return await addDoc(collectionRef, { ...lesson });
 };
+
+export const updateLesson = async (
+  courseUid: string,
+  lessonUid: string,
+  fields: Partial<Lesson>
+) => {
+  const lessonRef = getLessonDocumentRef(courseUid, lessonUid);
+  await updateDoc(lessonRef, { ...fields });
+};
