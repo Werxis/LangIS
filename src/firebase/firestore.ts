@@ -318,3 +318,8 @@ export const getLessons = async (courseUid: string) => {
   }));
   return lessons;
 };
+
+export const getLessonsOrderedQuery = (courseUid: string) => {
+  const collectionRef = getLessonsCollectionRef(courseUid);
+  return query(collectionRef, orderBy('start'));
+};

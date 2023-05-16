@@ -9,6 +9,7 @@ import {
   addOrUpdateRating,
   getCourseDocumentRef,
   getLessonsCollectionRef,
+  getLessonsOrderedQuery,
   getRatingDocumentRef,
 } from '../../firebase/firestore';
 import useFirestoreDocumentOnSnapshot from '../../hooks/useFirestoreDocumentOnSnapshot';
@@ -33,7 +34,12 @@ import InfoIcon from '@mui/icons-material/Info';
 import ChatIcon from '@mui/icons-material/Chat';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import GradeIcon from '@mui/icons-material/Grade';
-import { useDocumentTitle, useMediaDevice, useTranslation } from '../../hooks';
+import {
+  useDocumentTitle,
+  useFirestoreQueryOnSnapshot,
+  useMediaDevice,
+  useTranslation,
+} from '../../hooks';
 import useFirestoreCollectionOnSnapshot from '../../hooks/useFirestoreCollectionOnSnapshot';
 
 interface MyCoursesDetailPageProps {
@@ -48,9 +54,12 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
   const [courseRef] = useState(getCourseDocumentRef(courseUid as string));
   const { data: course } = useFirestoreDocumentOnSnapshot<Course>(courseRef);
 
-  const [lessonsRef] = useState(getLessonsCollectionRef(courseUid as string));
-  const { data: lessons } =
-    useFirestoreCollectionOnSnapshot<Lesson>(lessonsRef);
+  // const [lessonsRef] = useState(getLessonsCollectionRef(courseUid as string));
+  // const { data: lessons } =
+  //   useFirestoreCollectionOnSnapshot<Lesson>(lessonsRef);
+
+  const [lessonQuery] = useState(getLessonsOrderedQuery(courseUid as string));
+  const { data: lessons } = useFirestoreQueryOnSnapshot<Lesson>(lessonQuery);
 
   const { deviceType, isMobile } = useMediaDevice();
   useDocumentTitle(`LangIS - Course Detail`);

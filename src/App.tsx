@@ -29,6 +29,7 @@ function App() {
   if (isLangIsUserError) {
     return null;
   }
+  // TODO remove all console.log
 
   return (
     <BrowserRouter>
