@@ -79,8 +79,17 @@ const MyCourseDetail: FC<MyCourseChatPageProps> = ({ userLangIs }) => {
                   p: '0.5em 0.8em',
                 }}
               >
-                <IconButton
+                <Avatar
+                  src={
+                    message.userPhotoUrl === undefined ||
+                    message.userPhotoUrl === null
+                      ? undefined
+                      : message.userPhotoUrl
+                  }
+                  alt={t('profilePicture')}
                   sx={{
+                    width: '3em',
+                    height: '3em',
                     p: 0,
                     marginRight: '0.3em',
                     gridColumn: '1',
@@ -88,18 +97,7 @@ const MyCourseDetail: FC<MyCourseChatPageProps> = ({ userLangIs }) => {
                     display:
                       message.userUid === userLangIs.uid ? 'none' : 'block',
                   }}
-                >
-                  <Avatar
-                    src={
-                      message.userPhotoUrl === undefined ||
-                      message.userPhotoUrl === null
-                        ? undefined
-                        : message.userPhotoUrl
-                    }
-                    alt={t('profilePicture')}
-                    sx={{ width: '3em', height: '3em' }}
-                  />
-                </IconButton>
+                />
                 <Box
                   sx={{
                     gridColumn: '2',

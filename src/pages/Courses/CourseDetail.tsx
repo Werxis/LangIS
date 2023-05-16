@@ -29,6 +29,7 @@ import {
   DialogContent,
   DialogTitle,
   Rating,
+  Icon,
 } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import ChatIcon from '@mui/icons-material/Chat';
@@ -53,10 +54,6 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
   const { courseUid } = useParams();
   const [courseRef] = useState(getCourseDocumentRef(courseUid as string));
   const { data: course } = useFirestoreDocumentOnSnapshot<Course>(courseRef);
-
-  // const [lessonsRef] = useState(getLessonsCollectionRef(courseUid as string));
-  // const { data: lessons } =
-  //   useFirestoreCollectionOnSnapshot<Lesson>(lessonsRef);
 
   const [lessonQuery] = useState(getLessonsOrderedQuery(courseUid as string));
   const { data: lessons } = useFirestoreQueryOnSnapshot<Lesson>(lessonQuery);
@@ -128,25 +125,30 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
           </Typography>
           <Typography>
             {t('teacher')}: {course.teacher.firstName} {course.teacher.lastName}
-            <IconButton
+            {/* <Icon
               sx={{
                 p: 0,
-                marginRight: '0.3em',
+                m: '0.5em',
                 gridColumn: '1',
                 gridRow: 'span 2',
+                cursor: 'default',
               }}
-            >
-              <Avatar
-                src={
-                  course.teacher.photoUrl === undefined ||
-                  course.teacher.photoUrl === null
-                    ? undefined
-                    : course.teacher.photoUrl
-                }
-                alt={t('profilePicture')}
-                sx={{ width: '3em', height: '3em' }}
-              />
-            </IconButton>
+            > */}
+            <Avatar
+              src={
+                course.teacher.photoUrl === undefined ||
+                course.teacher.photoUrl === null
+                  ? undefined
+                  : course.teacher.photoUrl
+              }
+              alt={t('profilePicture')}
+              sx={{
+                width: '2em',
+                height: '2em',
+                m: '0.5em',
+              }}
+            />
+            {/* </Icon> */}
           </Typography>
         </Box>
       )}
