@@ -40,44 +40,50 @@ const HomeSignedOut = () => {
     <Box>
       {/* Navbar with height: '8vh' is also included, do not forget! */}
 
-      {/* Background image + Login */}
       <Box
         sx={{
           height: '85vh',
           width: '100vw',
-          display: 'flex',
-          justifyContent: 'center',
           backgroundColor: 'black',
-          position: 'relative',
         }}
       >
-        <img
-          src={bgImage}
-          alt="home_background_image"
-          style={{ width: '99%', height: '100%' }}
-        />
-
-        {/* Login */}
         <Box
           sx={{
-            position: 'absolute',
-            top: isMobile ? '2.5%' : '15%',
-            bottom: isMobile ? '2.5%' : undefined,
+            width: '99%',
+            height: '100%',
+            backgroundImage: `url(${bgImage})`,
+            backgroundSize: '100% 100%',
+            margin: '0 auto', // to center the black tape.. since 99% width
+            display: 'flex',
+            justifyContent: deviceType === 'desktop' ? 'end' : 'center',
+            alignItems: 'center',
             overflowY: 'auto',
-            width:
-              deviceType === 'desktop'
-                ? '500px'
-                : deviceType === 'tablet'
-                ? '70%'
-                : '90%',
-            margin: deviceType === 'desktop' ? '0% 0% 0% 50%' : 'auto 0px',
-            backgroundColor: 'white',
-            border: '1.5px solid white',
-            borderRadius: '1%',
-            padding: 3.0,
           }}
         >
-          {isLoginFormActive ? <LoginForm /> : <RegisterForm />}
+          <Box
+            sx={{
+              backgroundColor: 'white',
+              border: '1.5px solid white',
+              borderRadius: '1%',
+              padding: 3.0,
+              overflowY: 'auto',
+              maxHeight: isMobile ? '95%' : '90%',
+              width:
+                deviceType === 'mobile'
+                  ? '95%'
+                  : deviceType === 'tablet'
+                  ? '700px'
+                  : '500px',
+              marginX:
+                deviceType === 'tablet'
+                  ? '5%'
+                  : deviceType === 'desktop'
+                  ? '12.5%'
+                  : undefined,
+            }}
+          >
+            {isLoginFormActive ? <LoginForm /> : <RegisterForm />}
+          </Box>
         </Box>
       </Box>
 
