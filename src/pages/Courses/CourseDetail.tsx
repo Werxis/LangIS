@@ -1,6 +1,7 @@
+import * as Yup from 'yup';
 import { User } from 'firebase/auth';
 import { FC, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Form, useNavigate, useParams } from 'react-router-dom';
 import {
   Course,
   CourseRating,
@@ -39,6 +40,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import GradeIcon from '@mui/icons-material/Grade';
 import {
+  useDialog,
   useDocumentTitle,
   useFirestoreQueryOnSnapshot,
   useMediaDevice,
@@ -49,6 +51,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { Timestamp } from 'firebase/firestore';
 import { Edit, Delete, AttachFile } from '@mui/icons-material';
+import { FileInput } from '../../components/forms';
+import { Formik, Form as FormikForm } from 'formik';
+import LanguageSelect from '../../components/LanguageSelect';
+import { FileInputValueWithoutNull } from '../../components/forms/FileInput';
+import { uploadLessonFile } from '../../firebase/storage';
+import { StorageError } from 'firebase/storage';
 
 interface MyCoursesDetailPageProps {
   user: User;
@@ -87,6 +95,14 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
   const [selectedLesson, setSelectedLesson] = useState<LessonWithId | null>(
     null
   );
+
+  const [isFileDialogOpen, setIsFileDialogOpen] = useState<boolean>(false);
+  const openFileDialog = (lessonUid: string) => {
+    setSelectedLessonUid(lessonUid);
+    setIsFileDialogOpen(true);
+  };
+  const closeFileDialog = () => setIsFileDialogOpen(false);
+  const [selectedLessonUid, setSelectedLessonUid] = useState<string>('');
 
   return (
     <Container>
@@ -222,9 +238,20 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
                   }}
                 >
                   {userLangIs.uid === course?.teacher.uid && (
-                    <Box sx={{ gridRow: 1, gridColumn: 2 }}>
+                    <Box
+                      sx={{
+                        gridRow: '1/3',
+                        gridColumn: 2,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.5em',
+                        // justifyContent: 'space-between',
+                        // alignItems: 'end',
+                        // justifyItems: 'start',
+                      }}
+                    >
                       <Button
-                        sx={{ marginX: '0.5em' }}
+                        sx={{ width: '100%' }}
                         variant="outlined"
                         color="warning"
                         startIcon={<Edit />}
@@ -233,6 +260,7 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
                         {t('edit')}
                       </Button>
                       <Button
+                        sx={{ width: '100%' }}
                         variant="outlined"
                         color="error"
                         startIcon={<Delete />}
@@ -241,6 +269,17 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
                         }}
                       >
                         {t('delete')}
+                      </Button>
+                      <Button
+                        sx={{ width: '100%' }}
+                        variant="outlined"
+                        color="info"
+                        startIcon={<AttachFile />}
+                        onClick={() => {
+                          openFileDialog(lesson.uid);
+                        }}
+                      >
+                        TODO attach file
                       </Button>
                     </Box>
                   )}
@@ -280,11 +319,17 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
         initialRating={rating?.value ?? 0}
       />
 
-      {/* TOOD */}
       <LessonDialog
         isDialogOpen={isLessonDialogOpen}
         closeDialog={closeLessonDialog}
         selectedLesson={selectedLesson}
+        courseUid={course?.uid as string}
+      />
+
+      <FileDialog
+        isDialogOpen={isFileDialogOpen}
+        closeDialog={closeFileDialog}
+        lessonUid={selectedLessonUid}
         courseUid={course?.uid as string}
       />
     </Container>
@@ -420,12 +465,8 @@ const LessonDialog: FC<LessonDialogProps> = ({
       fileUrl: null,
     };
     if (selectedLesson === null) {
-      console.log('add new lesson');
-      console.log(lesson);
       addLesson(lesson, courseUid);
     } else {
-      console.log('edit lesson');
-      console.log(lesson);
       updateLesson(courseUid, selectedLesson.uid, lesson);
     }
 
@@ -494,6 +535,90 @@ const LessonDialog: FC<LessonDialogProps> = ({
           onClick={handleLessonSubmit}
         >
           {isSubmitting ? <CircularProgress size={25} /> : t('addNewLesson')}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+interface FileDialogProps {
+  isDialogOpen: boolean;
+  closeDialog: () => void;
+  courseUid: string;
+  lessonUid: string;
+}
+
+const FileDialog: FC<FileDialogProps> = ({
+  isDialogOpen,
+  closeDialog,
+  courseUid,
+  lessonUid,
+}) => {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const t = useTranslation();
+  const [file, setFile] = useState<File>();
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    console.log('not formik handleSubmit');
+  };
+
+  return (
+    <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth={'xs'} fullWidth>
+      <DialogTitle>TODO file upload</DialogTitle>
+      <DialogContent>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Formik
+            initialValues={{
+              file: '',
+            }}
+            onSubmit={async (values) => {
+              console.log('values: ', values);
+              // TODO Marian help pls
+              // try {
+              //   const files = values.file;
+              //   const selectedFile: File | null = files ? files[0] : null;
+              //   const fileUrl = await uploadLessonFile(lessonUid, file);
+              //   await updateLesson(courseUid, lessonUid, { fileUrl: fileUrl });
+              //   alert('TODO file success');
+              // } catch (error) {
+              //   if (error instanceof StorageError) {
+              //     alert(error.message);
+              //   }
+              //   alert('TODO it failed');
+              // }
+              // setIsSubmitting(false);
+              // closeDialog();
+            }}
+            validationSchema={Yup.object({
+              file: Yup.mixed<FileInputValueWithoutNull>().required(
+                'TODO file is required!'
+              ),
+            })}
+          >
+            <FormikForm id="file-form">
+              <FileInput name="file" fileType="single" fullWidth />
+            </FormikForm>
+          </Formik>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={closeDialog} sx={{ minWidth: 100 }}>
+          {t('cancel')}
+        </Button>
+        <Button
+          variant={isSubmitting ? 'text' : 'contained'}
+          sx={{ minWidth: 100 }}
+          type="submit"
+          form="file-form"
+        >
+          {isSubmitting ? <CircularProgress size={25} /> : t('rate')}
         </Button>
       </DialogActions>
     </Dialog>

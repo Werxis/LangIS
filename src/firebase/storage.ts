@@ -51,3 +51,21 @@ export const getProfilePicture = async (user: User, fileName: string) => {
   const url = await getDownloadURL(imageRef);
   return url;
 };
+
+// - - -
+
+export const uploadLessonFile = async (lessonUid: string, file: File) => {
+  const fileRef: StorageReference = ref(storage, `lessons/${lessonUid}}`);
+
+  const uploaded: UploadResult = await uploadBytes(fileRef, file);
+  const uploadedRef: StorageReference = uploaded.ref;
+  const url = await getDownloadURL(uploadedRef);
+  return url;
+};
+
+export const getLessonFile = async (lessonUid: string) => {
+  const imageRef = ref(storage, `lessons/${lessonUid}}`);
+
+  const url = await getDownloadURL(imageRef);
+  return url;
+};
