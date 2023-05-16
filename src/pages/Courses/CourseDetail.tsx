@@ -121,31 +121,21 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
           </Typography>
           <Typography>
             {t('teacher')}: {course.teacher.firstName} {course.teacher.lastName}
-            {/* <Icon
-              sx={{
-                p: 0,
-                m: '0.5em',
-                gridColumn: '1',
-                gridRow: 'span 2',
-                cursor: 'default',
-              }}
-            > */}
-            <Avatar
-              src={
-                course.teacher.photoUrl === undefined ||
-                course.teacher.photoUrl === null
-                  ? undefined
-                  : course.teacher.photoUrl
-              }
-              alt={t('profilePicture')}
-              sx={{
-                width: '2em',
-                height: '2em',
-                m: '0.5em',
-              }}
-            />
-            {/* </Icon> */}
           </Typography>
+          <Avatar
+            src={
+              course.teacher.photoUrl === undefined ||
+              course.teacher.photoUrl === null
+                ? undefined
+                : course.teacher.photoUrl
+            }
+            alt={t('profilePicture')}
+            sx={{
+              width: '2em',
+              height: '2em',
+              m: '0.5em',
+            }}
+          />
         </Box>
       )}
       {lessons.length === 0 && (
