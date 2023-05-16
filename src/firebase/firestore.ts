@@ -335,3 +335,8 @@ export const updateLesson = async (
   const lessonRef = getLessonDocumentRef(courseUid, lessonUid);
   await updateDoc(lessonRef, { ...fields });
 };
+
+export const deleteLesson = async (courseUid: string, lessonUid: string) => {
+  const documentRef = getLessonDocumentRef(courseUid, lessonUid);
+  await deleteDoc(documentRef);
+};

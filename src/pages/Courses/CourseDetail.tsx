@@ -9,6 +9,7 @@ import {
   LessonWithId,
   addLesson,
   addOrUpdateRating,
+  deleteLesson,
   getCourseDocumentRef,
   getLessonsOrderedQuery,
   getRatingDocumentRef,
@@ -43,16 +44,11 @@ import {
   useMediaDevice,
   useTranslation,
 } from '../../hooks';
-import {
-  DatePicker,
-  DateTimePicker,
-  LocalizationProvider,
-  TimePicker,
-} from '@mui/x-date-pickers';
+import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { Timestamp } from 'firebase/firestore';
-import { Edit } from '@mui/icons-material';
+import { Edit, Delete, AttachFile } from '@mui/icons-material';
 
 interface MyCoursesDetailPageProps {
   user: User;
@@ -225,15 +221,29 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
                     rowGap: '0.25em',
                   }}
                 >
-                  <Button
-                    variant="outlined"
-                    color="warning"
-                    startIcon={<Edit />}
-                    sx={{ gridRow: 1, gridColumn: 2 }}
-                    onClick={() => openLessonDialog(lesson)}
-                  >
-                    {t('edit')}
-                  </Button>
+                  {userLangIs.uid === course?.teacher.uid && (
+                    <Box sx={{ gridRow: 1, gridColumn: 2 }}>
+                      <Button
+                        sx={{ marginX: '0.5em' }}
+                        variant="outlined"
+                        color="warning"
+                        startIcon={<Edit />}
+                        onClick={() => openLessonDialog(lesson)}
+                      >
+                        {t('edit')}
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        startIcon={<Delete />}
+                        onClick={() => {
+                          deleteLesson(course.uid, lesson.uid);
+                        }}
+                      >
+                        {t('delete')}
+                      </Button>
+                    </Box>
+                  )}
                   <Typography fontWeight="bold" fontSize={20}>
                     {t('lesson')} {index + 1}
                   </Typography>
