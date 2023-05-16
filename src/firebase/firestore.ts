@@ -321,3 +321,8 @@ export const getLessonsOrderedQuery = (courseUid: string) => {
   const collectionRef = getLessonsCollectionRef(courseUid);
   return query(collectionRef, orderBy('start'));
 };
+
+export const addLesson = async (lesson: Lesson, courseUid: string) => {
+  const collectionRef = getLessonsCollectionRef(courseUid);
+  return await addDoc(collectionRef, { ...lesson });
+};

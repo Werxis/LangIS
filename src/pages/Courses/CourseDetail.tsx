@@ -6,6 +6,8 @@ import {
   CourseRating,
   LangIsUserWithId,
   Lesson,
+  LessonWithId,
+  addLesson,
   addOrUpdateRating,
   getCourseDocumentRef,
   getLessonsOrderedQuery,
@@ -28,7 +30,9 @@ import {
   DialogContent,
   DialogTitle,
   Rating,
+  TextField,
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import ChatIcon from '@mui/icons-material/Chat';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import GradeIcon from '@mui/icons-material/Grade';
@@ -38,6 +42,15 @@ import {
   useMediaDevice,
   useTranslation,
 } from '../../hooks';
+import {
+  DatePicker,
+  DateTimePicker,
+  LocalizationProvider,
+  TimePicker,
+} from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import { Timestamp } from 'firebase/firestore';
 
 interface MyCoursesDetailPageProps {
   user: User;
@@ -62,9 +75,20 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
   );
   const { data: rating } =
     useFirestoreDocumentOnSnapshot<CourseRating>(ratingRef);
+
   const [isRatingDialogOpen, setIsRatingDialogOpen] = useState<boolean>(false);
   const openRatingDialog = () => setIsRatingDialogOpen(true);
   const closeRatingDialog = () => setIsRatingDialogOpen(false);
+
+  const [isLessonDialogOpen, setIsLessonDialogOpen] = useState<boolean>(false);
+  const openLessonDialog = (lesson: LessonWithId | null) => {
+    setSelectedLesson(lesson);
+    setIsLessonDialogOpen(true);
+  };
+  const closeLessonDialog = () => setIsLessonDialogOpen(false);
+  const [selectedLesson, setSelectedLesson] = useState<LessonWithId | null>(
+    null
+  );
 
   return (
     <Container>
@@ -156,6 +180,16 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
                 )}
               </IconButton>
             )}
+            {userLangIs.role === 'teacher' && (
+              <Button
+                variant="outlined"
+                color="success"
+                startIcon={<AddIcon />}
+                onClick={() => openLessonDialog(null)}
+              >
+                {t('addNewLesson')}
+              </Button>
+            )}
             <Button
               variant="outlined"
               startIcon={<ChatIcon />}
@@ -223,6 +257,14 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
         userUid={userLangIs.uid}
         initialRating={rating?.value ?? 0}
       />
+
+      {/* TOOD */}
+      <LessonDialog
+        isDialogOpen={isLessonDialogOpen}
+        closeDialog={closeLessonDialog}
+        selectedLesson={selectedLesson}
+        courseUid={course?.uid as string}
+      />
     </Container>
   );
 };
@@ -249,6 +291,7 @@ const RatingDialog: FC<RatingDialogProps> = ({
     setCourseRating(initialRating);
   }, [initialRating]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const t = useTranslation();
 
   const handleRatingSubmit = async () => {
     setIsSubmitting(true);
@@ -259,7 +302,7 @@ const RatingDialog: FC<RatingDialogProps> = ({
 
   return (
     <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth={'xs'} fullWidth>
-      <DialogTitle>Rate this course!</DialogTitle>
+      <DialogTitle>{t('rateThisCourse')}</DialogTitle>
       <DialogContent>
         <Box
           sx={{
@@ -281,14 +324,140 @@ const RatingDialog: FC<RatingDialogProps> = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={closeDialog} sx={{ minWidth: 100 }}>
-          Cancel
+          {t('cancel')}
         </Button>
         <Button
           variant={isSubmitting ? 'text' : 'contained'}
           sx={{ minWidth: 100 }}
           onClick={handleRatingSubmit}
         >
-          {isSubmitting ? <CircularProgress size={25} /> : 'Rate!'}
+          {isSubmitting ? <CircularProgress size={25} /> : t('rate')}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+interface LessonDialogProps {
+  isDialogOpen: boolean;
+  closeDialog: () => void;
+  selectedLesson: LessonWithId | null;
+  courseUid: string;
+}
+
+// TODO;
+const LessonDialog: FC<LessonDialogProps> = ({
+  isDialogOpen,
+  closeDialog,
+  selectedLesson,
+  courseUid,
+}) => {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const t = useTranslation();
+  const [lessonData, setLessonData] = useState({
+    start: dayjs(selectedLesson?.start.toMillis()) ?? dayjs(Date.now()),
+    lengthMinutes: selectedLesson?.lengthMinutes ?? 60,
+    classroom: selectedLesson?.classroom ?? '12C',
+    description: selectedLesson?.description ?? 'Použití průběhových časů',
+  });
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setLessonData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleDateChange = (date: dayjs.Dayjs | null) => {
+    setLessonData((prevData) => ({
+      ...prevData,
+      start: date ? dayjs(date.toDate()) : dayjs(),
+    }));
+  };
+
+  const handleLessonSubmit = async () => {
+    setIsSubmitting(true);
+    if (selectedLesson === null) {
+      console.log('add new lesson');
+      const lesson: Lesson = {
+        start: Timestamp.fromDate(lessonData.start.toDate()),
+        lengthMinutes: lessonData.lengthMinutes,
+        classroom: lessonData.classroom,
+        description: lessonData.description,
+        fileUrl: null,
+      };
+      addLesson(lesson, courseUid);
+    } else {
+      console.log('edit lesson');
+    }
+
+    setIsSubmitting(false);
+    closeDialog();
+  };
+
+  return (
+    <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth={'xs'} fullWidth>
+      <DialogTitle>TODO test title add lesson</DialogTitle>
+      <DialogContent>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            rowGap: '1em',
+            marginY: '1em',
+          }}
+        >
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateTimePicker
+              sx={{ width: '100%' }}
+              label="TODO change"
+              value={lessonData.start}
+              onChange={(newValue) => handleDateChange(newValue)}
+            />
+          </LocalizationProvider>
+          <TextField
+            name="lengthMinutes"
+            label="Length (Minutes)"
+            type="number"
+            value={lessonData.lengthMinutes}
+            onChange={handleChange}
+            required
+            fullWidth
+          />
+          <TextField
+            name="classroom"
+            label="Classroom"
+            value={lessonData.classroom}
+            onChange={handleChange}
+            required
+            fullWidth
+          />
+          <TextField
+            name="description"
+            label="Description"
+            multiline
+            rows={4}
+            value={lessonData.description}
+            onChange={handleChange}
+            required
+            fullWidth
+          />
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={closeDialog} sx={{ minWidth: 100 }}>
+          {t('cancel')}
+        </Button>
+        <Button
+          variant={isSubmitting ? 'text' : 'contained'}
+          sx={{ minWidth: 100 }}
+          onClick={handleLessonSubmit}
+        >
+          {isSubmitting ? (
+            <CircularProgress size={25} />
+          ) : (
+            'TODO add new lesson'
+          )}
         </Button>
       </DialogActions>
     </Dialog>

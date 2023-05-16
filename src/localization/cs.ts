@@ -101,4 +101,8 @@ export default {
   lessonContent: 'Náplň lekce',
   averageRating: 'Průměrné hodnocení',
   noRating: 'Zatím nehodnoceno',
+  addNewLesson: 'Přidat novou lekci',
+  rateThisCourse: 'Ohodnoťte tento kurz!',
+  cancel: 'Zrušit',
+  rate: 'Ohodnotit!',
 };

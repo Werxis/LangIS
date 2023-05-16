@@ -100,4 +100,8 @@ export default {
   lessonContent: 'Lesson content',
   averageRating: 'Average rating',
   noRating: 'No rating yet',
+  addNewLesson: 'Add new lesson',
+  rateThisCourse: 'Rate this course!',
+  cancel: 'Cancel',
+  rate: 'Rate!',
 };

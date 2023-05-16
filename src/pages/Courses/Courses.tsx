@@ -23,7 +23,7 @@ import {
   Rating,
   Typography,
 } from '@mui/material';
-import { Close, Delete } from '@mui/icons-material';
+import { Close, Delete, Edit } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
 import InfoIcon from '@mui/icons-material/Info';
@@ -227,6 +227,7 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
                         value={course.averageRating}
                         precision={0.1}
                         size="large"
+                        readOnly
                       />
                     ) : (
                       <Typography sx={{ fontStyle: 'italic' }}>
@@ -264,6 +265,7 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
                           startIcon={<CancelIcon />}
                           onClick={() =>
                             setDialog({
+                              // TODO prelozit
                               dialogTitle: 'Zrušenie zápisu',
                               dialogData:
                                 'Ste si naprosto istý, že sa chcete odpísať z nasledujúceho kurzu?',
@@ -291,6 +293,17 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
                         {t('courseFull')}
                       </Typography>
                     ))}
+                  {userLangIs.uid === course.teacher.uid && (
+                    <Button
+                      variant="outlined"
+                      color="info"
+                      startIcon={<InfoIcon />}
+                      sx={{ width: '80%' }}
+                      onClick={() => navigate(`/courses/${course.uid}`)}
+                    >
+                      {t('courseDetail')}
+                    </Button>
+                  )}
                   {userLangIs.role === 'admin' && (
                     <>
                       {/* TODO pridat funkcionalitu edit course */}
