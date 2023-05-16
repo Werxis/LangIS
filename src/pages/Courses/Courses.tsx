@@ -176,12 +176,18 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
                   <Typography marginTop={2} sx={{ fontStyle: 'italic' }}>
                     {course.description}
                   </Typography>
-                  <Typography>{course.language}</Typography>
 
                   <Box
                     marginTop={3}
                     sx={{ display: 'flex', flexDirection: 'column' }}
                   >
+                    <Box sx={{ display: 'flex', gap: '5px' }}>
+                      <Typography fontWeight={'bold'}>
+                        {t('courseLanguage')}:
+                      </Typography>
+                      <Typography>{course.language}</Typography>
+                    </Box>
+
                     <Box sx={{ display: 'flex', gap: '5px' }}>
                       <Typography fontWeight={'bold'}>
                         {t('languageLevel')}:

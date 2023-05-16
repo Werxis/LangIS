@@ -79,11 +79,58 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
           >
             {course.name}
           </Typography>
+          {/* Details */}
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              rowGap: '0.5em',
+            }}
+          >
+            <Box sx={{ display: 'flex', gap: '5px' }}>
+              <Typography fontWeight={'bold'}>
+                {t('courseLanguage')}:
+              </Typography>
+              <Typography>{course.language}</Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', gap: '5px' }}>
+              <Typography fontWeight={'bold'}>{t('languageLevel')}:</Typography>
+              <Typography>{course.level}</Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: 'flex',
+                gap: '5px',
+                alignItems: 'center',
+                marginTop: '-0.5em',
+              }}
+            >
+              <Typography fontWeight={'bold'}>{t('teacher')}:</Typography>
+              <Typography>
+                {course.teacher.firstName} {course.teacher.lastName}
+              </Typography>
+              <Avatar
+                src={
+                  course.teacher.photoUrl === undefined ||
+                  course.teacher.photoUrl === null
+                    ? undefined
+                    : course.teacher.photoUrl
+                }
+                alt={t('profilePicture')}
+                sx={{
+                  width: '2em',
+                  height: '2em',
+                  marginLeft: '0.5em',
+                }}
+              />
+            </Box>
+          </Box>
           {/* Buttons */}
           <Box
             sx={{
-              marginBottom: 2,
-              paddingX: 0,
+              marginY: 2,
               display: 'flex',
               gap: 1,
               flexDirection: isMobile ? 'column' : 'row',
@@ -91,19 +138,25 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
               alignItems: 'stretch',
             }}
           >
-            <IconButton
-              size="medium"
-              onClick={() => openRatingDialog()}
-              sx={{
-                alignSelf: isMobile ? 'end' : undefined,
-                // marginRight: isMobile ? 1.0 : 0,
-                border: '1px solid rgba(25, 118, 210, 0.5)',
-                color: 'rgba(25, 118, 210, 0.5)',
-                borderRadius: '10%',
-              }}
-            >
-              {rating?.value === undefined ? <StarBorderIcon /> : <GradeIcon />}
-            </IconButton>
+            {userLangIs.role === 'student' && (
+              <IconButton
+                size="medium"
+                onClick={() => openRatingDialog()}
+                sx={{
+                  alignSelf: isMobile ? 'start' : undefined,
+                  // marginRight: isMobile ? 1.0 : 0,
+                  border: '1px solid rgba(25, 118, 210, 0.5)',
+                  color: 'rgba(25, 118, 210, 0.5)',
+                  borderRadius: '10%',
+                }}
+              >
+                {rating?.value === undefined ? (
+                  <StarBorderIcon />
+                ) : (
+                  <GradeIcon />
+                )}
+              </IconButton>
+            )}
             <Button
               variant="outlined"
               startIcon={<ChatIcon />}
@@ -112,38 +165,21 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
               {t('groupChat')}
             </Button>
           </Box>
-          {lessons.length === 0 && (
-            <Typography>{t('noLessonsAvailable')}</Typography>
-          )}
-          <Typography>{course.language}</Typography>
-          <Typography>
-            {t('languageLevel')}: {course.level}
-          </Typography>
-          <Typography>
-            {t('teacher')}: {course.teacher.firstName} {course.teacher.lastName}
-          </Typography>
-          <Avatar
-            src={
-              course.teacher.photoUrl === undefined ||
-              course.teacher.photoUrl === null
-                ? undefined
-                : course.teacher.photoUrl
-            }
-            alt={t('profilePicture')}
-            sx={{
-              width: '2em',
-              height: '2em',
-              m: '0.5em',
-            }}
-          />
         </Box>
       )}
       {lessons.length === 0 && (
-        <Typography>{t('noLessonsAvailable')}</Typography>
+        <Typography variant="button" align="center" component="div">
+          {t('noLessonsAvailable')}
+        </Typography>
       )}
       {!course && <Typography>404</Typography>}
       {lessons.length !== 0 && (
-        <Stack direction="column" spacing={2} sx={{ width: '100%' }}>
+        // marginBottom because of footer size
+        <Stack
+          direction="column"
+          spacing={2}
+          sx={{ width: '100%', marginBottom: '5em' }}
+        >
           {lessons.map((lesson, index) => (
             <Card key={lesson.uid} elevation={6}>
               <CardContent>
