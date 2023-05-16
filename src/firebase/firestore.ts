@@ -106,6 +106,7 @@ export type Course = {
   capacity: number;
   students: string[];
   teacher: CourseTeacher;
+  averageRating: number | null;
 };
 
 export type CourseTeacher = {
@@ -275,6 +276,17 @@ export const getRating = async (courseUid: string, userUid: string) => {
   return undefined;
 };
 
+export const updateCourseAverageRating = async (courseUid: string) => {
+  const collectionRef = getRatingsCollectionRef(courseUid);
+  const querySnaphot = await getDocs(collectionRef);
+  const ratingSum = querySnaphot.docs.reduce(
+    (sum, doc) => sum + doc.data().value,
+    0
+  );
+  const averageRating = ratingSum / querySnaphot.docs.length;
+  updateCourse(courseUid, { averageRating });
+};
+
 export const addOrUpdateRating = async (
   courseUid: string,
   userUid: string,
@@ -282,6 +294,7 @@ export const addOrUpdateRating = async (
 ) => {
   const documentRef = getRatingDocumentRef(courseUid, userUid);
   await setDoc(documentRef, { value: rating });
+  await updateCourseAverageRating(courseUid);
 };
 
 // - - - - -

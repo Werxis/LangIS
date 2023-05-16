@@ -395,6 +395,7 @@ const AddCourseForm = () => {
                 ...values,
                 students: [],
                 teacher: courseTeacher as CourseTeacher,
+                averageRating: null,
               });
               setDialog({
                 dialogTitle: t('courseAddedSuccessfullyTitle'),

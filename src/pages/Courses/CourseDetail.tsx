@@ -8,7 +8,6 @@ import {
   Lesson,
   addOrUpdateRating,
   getCourseDocumentRef,
-  getLessonsCollectionRef,
   getLessonsOrderedQuery,
   getRatingDocumentRef,
 } from '../../firebase/firestore';
@@ -29,9 +28,7 @@ import {
   DialogContent,
   DialogTitle,
   Rating,
-  Icon,
 } from '@mui/material';
-import InfoIcon from '@mui/icons-material/Info';
 import ChatIcon from '@mui/icons-material/Chat';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import GradeIcon from '@mui/icons-material/Grade';
@@ -41,7 +38,6 @@ import {
   useMediaDevice,
   useTranslation,
 } from '../../hooks';
-import useFirestoreCollectionOnSnapshot from '../../hooks/useFirestoreCollectionOnSnapshot';
 
 interface MyCoursesDetailPageProps {
   user: User;
@@ -169,7 +165,7 @@ const CourseDetail: FC<MyCoursesDetailPageProps> = ({ userLangIs }) => {
                   }}
                 >
                   <Typography fontWeight="bold" fontSize={20}>
-                    {index + 1}. {t('lesson')}
+                    {t('lesson')} {index + 1}
                   </Typography>
                   <Typography>
                     {lesson.start.toDate().toLocaleDateString('cs', {
