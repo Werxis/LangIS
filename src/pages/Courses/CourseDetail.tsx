@@ -576,25 +576,25 @@ const FileDialog: FC<FileDialogProps> = ({
         >
           <Formik
             initialValues={{
-              file: '',
+              file: new File([], ''),
             }}
-            onSubmit={async (values) => {
+            onSubmit={async (values: { file: File }) => {
               console.log('values: ', values);
               // TODO Marian help pls
-              // try {
-              //   const files = values.file;
-              //   const selectedFile: File | null = files ? files[0] : null;
-              //   const fileUrl = await uploadLessonFile(lessonUid, file);
-              //   await updateLesson(courseUid, lessonUid, { fileUrl: fileUrl });
-              //   alert('TODO file success');
-              // } catch (error) {
-              //   if (error instanceof StorageError) {
-              //     alert(error.message);
-              //   }
-              //   alert('TODO it failed');
-              // }
-              // setIsSubmitting(false);
-              // closeDialog();
+              try {
+                // const files = values.file;
+                // const selectedFile: File | null = files ? files[0] : null;
+                const fileUrl = await uploadLessonFile(lessonUid, values.file);
+                await updateLesson(courseUid, lessonUid, { fileUrl: fileUrl });
+                alert('TODO file success');
+              } catch (error) {
+                if (error instanceof StorageError) {
+                  alert(error.message);
+                }
+                alert('TODO it failed');
+              }
+              setIsSubmitting(false);
+              closeDialog();
             }}
             validationSchema={Yup.object({
               file: Yup.mixed<FileInputValueWithoutNull>().required(
