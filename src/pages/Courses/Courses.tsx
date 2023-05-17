@@ -23,7 +23,7 @@ import {
   Rating,
   Typography,
 } from '@mui/material';
-import { Close, Delete, Edit } from '@mui/icons-material';
+import { Close, Delete } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
 import InfoIcon from '@mui/icons-material/Info';
@@ -265,11 +265,9 @@ const Courses: FC<CoursesPageProps> = ({ userLangIs }) => {
                           startIcon={<CancelIcon />}
                           onClick={() =>
                             setDialog({
-                              // TODO prelozit
-                              dialogTitle: 'Zrušenie zápisu',
-                              dialogData:
-                                'Ste si naprosto istý, že sa chcete odpísať z nasledujúceho kurzu?',
-                              submitLabel: 'Cancel Enrollment',
+                              dialogTitle: t('cancelEnrollment'),
+                              dialogData: t('cancelEnrollmentAreYouSure'),
+                              submitLabel: t('cancelEnrollment'),
                               onSubmit: () => cancelUserEnrollment(course),
                             })
                           }
@@ -447,13 +445,13 @@ const AddCourseForm = () => {
             }
           }}
           validationSchema={Yup.object({
-            name: Yup.string().required('Name is required!'),
-            description: Yup.string().required('Description is required!'),
-            language: Yup.mixed().required('Language is required!'),
-            level: Yup.mixed().required('Level is required!'),
-            capacity: Yup.string().required('Capacity is required!'),
-            price: Yup.number().required('Price is required!'),
-            teacher: Yup.mixed().required('Teacher is required!'),
+            name: Yup.string().required(t('name_field_required')),
+            description: Yup.string().required(t('description_field_required')),
+            language: Yup.mixed().required(t('language_field_required')),
+            level: Yup.mixed().required(t('level_field_required')),
+            capacity: Yup.string().required(t('capacity_field_required')),
+            price: Yup.number().required(t('price_field_required')),
+            teacher: Yup.mixed().required(t('teacher_field_required')),
           })}
         >
           <Form>

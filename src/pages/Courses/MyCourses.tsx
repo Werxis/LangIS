@@ -158,7 +158,9 @@ const MyCourses: FC<MyCoursesPageProps> = ({ userLangIs }) => {
       )}
 
       {userCourses.length === 0 && (
-        <Typography>{t('noUserCourses')}</Typography>
+        <Typography variant="button" align="center" component="div">
+          {t('noUserCourses')}
+        </Typography>
       )}
     </Container>
   );

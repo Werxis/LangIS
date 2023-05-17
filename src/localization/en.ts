@@ -32,6 +32,13 @@ export default {
   login_success: 'Login was successful.',
   first_name_field_required: 'First name field is required',
   last_name_field_required: 'Last name field is required',
+  name_field_required: 'Name is required',
+  description_field_required: 'Description is required',
+  language_field_required: 'Language is required',
+  level_field_required: 'Level is required',
+  capacity_field_required: 'Capacity is required',
+  price_field_required: 'Price is required',
+  teacher_field_required: 'Teacher is required',
   email_field_required: 'Email field is required',
   password_field_required: 'Password field is required',
   invalid_email_format: 'Invalid email format',
@@ -110,4 +117,6 @@ export default {
   deleteFile: 'Delete file',
   uploadFile: 'Upload file',
   fileIsRequired: 'File is required!',
+  cancelEnrollmentAreYouSure:
+    'Are you sure you want to cancel your enrollment?',
 };

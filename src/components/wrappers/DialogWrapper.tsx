@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import {
   CircularProgress,
   Button,
@@ -9,7 +9,7 @@ import {
   DialogActions,
 } from '@mui/material';
 
-import { useDialog } from '../../hooks';
+import { useDialog, useTranslation } from '../../hooks';
 import { DialogOptions } from '../../recoil/atoms';
 
 const resolveDialogSize = (dialogSize: DialogOptions['size']) => {
@@ -29,6 +29,7 @@ const resolveDialogSize = (dialogSize: DialogOptions['size']) => {
 };
 
 const DialogWrapper = () => {
+  const t = useTranslation();
   const { dialog, closeDialog } = useDialog();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -67,7 +68,7 @@ const DialogWrapper = () => {
       </DialogContent>
       <DialogActions>
         <Button onClick={onCloseHandler} sx={{ minWidth: 100 }}>
-          Cancel
+          {t('cancel')}
         </Button>
         {dialog.onSubmit && (
           <Button
