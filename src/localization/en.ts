@@ -106,4 +106,8 @@ export default {
   rate: 'Rate!',
   lessonLengthInMinutes: 'Length in minutes',
   lessonDateAndTime: 'Date and time',
+  deleteLesson: 'Delete lesson',
+  deleteFile: 'Delete file',
+  uploadFile: 'Upload file',
+  fileIsRequired: 'File is required!',
 };

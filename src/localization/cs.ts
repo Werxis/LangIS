@@ -107,4 +107,8 @@ export default {
   rate: 'Ohodnotit!',
   lessonLengthInMinutes: 'Délka v minutách',
   lessonDateAndTime: 'Datum a čas',
+  deleteLesson: 'Smazat lekci',
+  deleteFile: 'Smazt soubor',
+  uploadFile: 'Nahrát soubor',
+  fileIsRequired: 'Soubor je povinný!',
 };

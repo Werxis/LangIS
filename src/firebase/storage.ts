@@ -8,9 +8,11 @@ import {
   StorageReference,
   UploadResult,
   ListResult,
+  deleteObject,
 } from 'firebase/storage';
 import { User } from 'firebase/auth';
 import { app } from './app';
+import { updateLesson } from './firestore';
 
 const storage = getStorage(app);
 
@@ -55,7 +57,10 @@ export const getProfilePicture = async (user: User, fileName: string) => {
 // - - -
 
 export const uploadLessonFile = async (lessonUid: string, file: File) => {
-  const fileRef: StorageReference = ref(storage, `lessons/${lessonUid}}`);
+  const fileRef: StorageReference = ref(
+    storage,
+    `lessons/${lessonUid}/${file.name}`
+  );
 
   const uploaded: UploadResult = await uploadBytes(fileRef, file);
   const uploadedRef: StorageReference = uploaded.ref;
@@ -63,9 +68,19 @@ export const uploadLessonFile = async (lessonUid: string, file: File) => {
   return url;
 };
 
-export const getLessonFile = async (lessonUid: string) => {
-  const imageRef = ref(storage, `lessons/${lessonUid}}`);
+export const getLessonFile = async (lessonUid: string, fileName: string) => {
+  const imageRef = ref(storage, `lessons/${lessonUid}/${fileName}`);
 
   const url = await getDownloadURL(imageRef);
   return url;
+};
+
+export const deleteLessonFile = async (
+  courseUid: string,
+  lessonUid: string,
+  fileUrl: string
+) => {
+  const fileRef = ref(storage, fileUrl);
+  await deleteObject(fileRef);
+  await updateLesson(courseUid, lessonUid, { fileUrl: null });
 };
